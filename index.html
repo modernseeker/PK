@@ -11,8 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="premium.css?v=2" />
   <link rel="stylesheet" href="product-detail.css?v=3" />
-  <link rel="stylesheet" href="premium-fixes.css?v=2" />
-  <link rel="stylesheet" href="hero-image.css?v=5" />
+  <link rel="stylesheet" href="premium-fixes.css?v=3" />
+  <link rel="stylesheet" href="hero-image.css?v=7" />
 </head>
 <body>
   <div class="utility-bar">
@@ -59,7 +59,12 @@
   <main>
     <section class="hero-shell" id="home">
       <div class="hero" role="img" aria-label="Trusted Products. Powering Nepal. Complete electrical solution from YK Electric.">
-        <div class="container hero-inner"></div>
+        <div class="container hero-inner">
+          <div hidden aria-hidden="true">
+            <input id="heroSearch" value="">
+            <button id="heroSearchBtn" type="button"></button>
+          </div>
+        </div>
       </div>
 
       <div class="category-rail" id="categoryRail">
@@ -147,7 +152,24 @@
   </aside>
   <div class="overlay" id="overlay"></div>
 
-  <script src="app.js?v=5"></script>
+  <script>
+    (async()=>{
+      const hero=document.querySelector('.hero');
+      if(!hero)return;
+      try{
+        const res=await fetch('assets/yk-hero-final.webp?v=7',{cache:'no-store'});
+        const raw=(await res.text()).replace(/\s+/g,'');
+        if(raw.startsWith('UklGR')){
+          hero.style.backgroundImage=`url("data:image/webp;base64,${raw}")`;
+        }else{
+          hero.style.backgroundImage='url("assets/yk-hero-final.webp?v=7")';
+        }
+      }catch(err){
+        console.warn('YK hero image could not be loaded',err);
+      }
+    })();
+  </script>
+  <script src="app.js?v=6"></script>
   <script src="real-product-images.js?v=2"></script>
   <script src="contact.js?v=5"></script>
   <script src="product-detail.js?v=2"></script>
