@@ -2,17 +2,28 @@
   const topInput=document.getElementById('topSearch');
   const topButton=document.getElementById('topSearchButton');
 
+  async function readHeroParts(files){
+    const parts=await Promise.all(files.map(async file=>{
+      const response=await fetch(file,{cache:'no-store'});
+      if(!response.ok)throw new Error(`Hero asset failed: ${response.status}`);
+      return (await response.text()).replace(/\s+/g,'');
+    }));
+    return parts.join('');
+  }
+
   async function loadHeroBanner(){
     const hero=document.querySelector('.hero');
     if(!hero)return;
     try{
-      const files=['assets/hero-sharp-a.txt?v=1','assets/hero-sharp-b.txt?v=1'];
-      const parts=await Promise.all(files.map(async file=>{
-        const response=await fetch(file,{cache:'no-store'});
-        if(!response.ok)throw new Error(`Hero asset failed: ${response.status}`);
-        return (await response.text()).replace(/\s+/g,'');
-      }));
-      const data=parts.join('');
+      const hqFiles=[1,2,3,4,5,6,7,8].map(i=>`assets/hero-hq-${i}.txt?v=1`);
+      let data;
+      try{
+        data=await readHeroParts(hqFiles);
+      }catch(hqError){
+        console.warn('HQ hero unavailable; using standard hero.',hqError);
+        const fallbackFiles=[1,2,3,4,5].map(i=>`assets/hero-chunk-${i}.txt?v=2`);
+        data=await readHeroParts(fallbackFiles);
+      }
       let image=hero.querySelector('.hero-banner-img');
       if(!image){
         image=document.createElement('img');
@@ -24,9 +35,9 @@
       }
       image.src=`data:image/webp;base64,${data}`;
       hero.style.backgroundImage='none';
-      hero.dataset.heroLoaded='sharp';
+      hero.dataset.heroLoaded='hq';
     }catch(error){
-      console.error('YK sharp hero banner failed to load',error);
+      console.error('YK hero banner failed to load',error);
     }
   }
 
