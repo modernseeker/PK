@@ -47,16 +47,12 @@
 
   function enhanceDetail(){
     const wa=document.getElementById('detailWhatsApp');
-    if(wa)wa.textContent='Get Price on WhatsApp';
+    if(wa&&wa.textContent.trim()!=='Get Price on WhatsApp')wa.textContent='Get Price on WhatsApp';
   }
 
   enhanceCards();
   enhanceDetail();
 
-  const gridObserver=new MutationObserver(()=>{enhanceCards();enhanceDetail();});
-  ['featuredGrid','productGrid'].forEach(id=>{
-    const node=document.getElementById(id);
-    if(node)gridObserver.observe(node,{childList:true,subtree:true});
-  });
-  gridObserver.observe(document.body,{childList:true,subtree:true});
+  const observer=new MutationObserver(()=>{enhanceCards();enhanceDetail();});
+  observer.observe(document.body,{childList:true,subtree:true});
 })();
