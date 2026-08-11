@@ -42,15 +42,21 @@
         const actions=body.querySelector('.product-actions');
         body.insertBefore(price,actions||null);
       }
-      const add=card.querySelector('.add');
-      if(add&&add.textContent.trim()==='Add to request') add.textContent='Add to request';
     });
   }
 
+  function enhanceDetail(){
+    const wa=document.getElementById('detailWhatsApp');
+    if(wa)wa.textContent='Get Price on WhatsApp';
+  }
+
   enhanceCards();
-  const observer=new MutationObserver(enhanceCards);
+  enhanceDetail();
+
+  const gridObserver=new MutationObserver(()=>{enhanceCards();enhanceDetail();});
   ['featuredGrid','productGrid'].forEach(id=>{
     const node=document.getElementById(id);
-    if(node)observer.observe(node,{childList:true,subtree:true});
+    if(node)gridObserver.observe(node,{childList:true,subtree:true});
   });
+  gridObserver.observe(document.body,{childList:true,subtree:true});
 })();
