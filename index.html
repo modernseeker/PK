@@ -126,16 +126,16 @@
           <p>Model number, brand, ampere rating, voltage, size, photo description or application all help us source the correct item.</p>
           <div class="contact-lines">
             <div><small>LOCATION</small><strong>Butwal, Nepal</strong></div>
-            <div><small>PHONE / WHATSAPP</small><strong id="phoneText">Add your number in app.js</strong></div>
-            <div><small>EMAIL</small><strong id="emailText">Add your email in app.js</strong></div>
+            <div><small>PHONE / WHATSAPP</small><strong id="phoneText">9747359443</strong></div>
+            <div><small>EMAIL</small><strong id="emailText">ykelectricnepal@gmail.com</strong></div>
           </div>
         </div>
         <form class="request-form" id="requestForm">
           <div class="two"><label>Name<input name="name" required placeholder="Your name" /></label><label>Phone<input name="phone" required placeholder="98XXXXXXXX" /></label></div>
           <label>Product<input name="product" required placeholder="Example: 25A contactor, 220V coil" /></label>
           <label>Details<textarea name="details" rows="5" placeholder="Brand, model, quantity, specification, delivery location…"></textarea></label>
-          <button class="btn primary full" type="submit">Prepare product request</button>
-          <p class="form-status" id="formStatus">This demo prepares the request; it does not charge the customer.</p>
+          <button class="btn primary full" type="submit">Send request on WhatsApp</button>
+          <p class="form-status" id="formStatus">Your request opens in WhatsApp for confirmation. No payment is taken on this website.</p>
         </form>
       </div>
     </section>
@@ -153,10 +153,11 @@
   <aside class="drawer" id="drawer" aria-hidden="true">
     <div class="drawer-head"><div><small>YK ELECTRIC</small><h3>Request cart</h3></div><button id="closeCart" aria-label="Close">×</button></div>
     <div class="cart-items" id="cartItems"></div>
-    <div class="drawer-foot"><div class="notice"><b>Price after verification</b><span>Supplier stock, model and final price are confirmed before dispatch.</span></div><button class="btn primary full" id="copyOrder">Copy order request</button><button class="btn ghost full" id="clearCart">Clear cart</button><p id="copyStatus"></p></div>
+    <div class="drawer-foot"><div class="notice"><b>Price after verification</b><span>Supplier stock, model and final price are confirmed before dispatch.</span></div><button class="btn primary full" id="copyOrder">Send order on WhatsApp</button><button class="btn ghost full" id="clearCart">Clear cart</button><p id="copyStatus"></p></div>
   </aside>
   <div class="overlay" id="overlay"></div>
 
   <script src="app.js"></script>
+  <script src="contact.js"></script>
 </body>
 </html>
