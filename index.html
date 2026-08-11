@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="premium.css?v=2" />
   <link rel="stylesheet" href="product-detail.css?v=3" />
   <link rel="stylesheet" href="premium-fixes.css?v=3" />
-  <link rel="stylesheet" href="hero-image.css?v=7" />
+  <link rel="stylesheet" href="hero-image.css?v=8" />
 </head>
 <body>
   <div class="utility-bar">
@@ -152,23 +152,6 @@
   </aside>
   <div class="overlay" id="overlay"></div>
 
-  <script>
-    (async()=>{
-      const hero=document.querySelector('.hero');
-      if(!hero)return;
-      try{
-        const res=await fetch('assets/yk-hero-final.webp?v=7',{cache:'no-store'});
-        const raw=(await res.text()).replace(/\s+/g,'');
-        if(raw.startsWith('UklGR')){
-          hero.style.backgroundImage=`url("data:image/webp;base64,${raw}")`;
-        }else{
-          hero.style.backgroundImage='url("assets/yk-hero-final.webp?v=7")';
-        }
-      }catch(err){
-        console.warn('YK hero image could not be loaded',err);
-      }
-    })();
-  </script>
   <script src="app.js?v=6"></script>
   <script src="real-product-images.js?v=2"></script>
   <script src="contact.js?v=5"></script>
