@@ -2,6 +2,26 @@
   const topInput=document.getElementById('topSearch');
   const topButton=document.getElementById('topSearchButton');
 
+  async function loadHeroBanner(){
+    const hero=document.querySelector('.hero');
+    if(!hero)return;
+    try{
+      const parts=await Promise.all([1,2,3,4,5].map(async i=>{
+        const response=await fetch(`assets/hero-chunk-${i}.txt?v=2`,{cache:'no-store'});
+        if(!response.ok)throw new Error(`Hero chunk ${i} failed: ${response.status}`);
+        return (await response.text()).replace(/\s+/g,'');
+      }));
+      const data=parts.join('');
+      hero.style.backgroundImage=`url("data:image/webp;base64,${data}")`;
+      hero.style.backgroundSize='cover';
+      hero.style.backgroundRepeat='no-repeat';
+      hero.style.backgroundPosition=window.matchMedia('(max-width:760px)').matches?'58% center':'center center';
+      hero.dataset.heroLoaded='true';
+    }catch(error){
+      console.error('YK hero banner failed to reconstruct',error);
+    }
+  }
+
   function runTopSearch(){
     const q=(topInput?.value||'').trim();
     const catalog=document.getElementById('catalogSearch');
@@ -50,6 +70,7 @@
     if(wa&&wa.textContent.trim()!=='Get Price on WhatsApp')wa.textContent='Get Price on WhatsApp';
   }
 
+  loadHeroBanner();
   enhanceCards();
   enhanceDetail();
 
