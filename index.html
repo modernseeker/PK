@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="v2.css" />
 </head>
 <body>
   <div class="announcement">YK Electric & Electronic · Butwal, Nepal <span>Electrical · Automation · Motors · Electronics</span></div>
@@ -21,7 +22,9 @@
       </a>
       <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
       <nav id="nav">
+        <a href="#collections">Collections</a>
         <a href="#categories">Categories</a>
+        <a href="#featured">Featured</a>
         <a href="#products">Products</a>
         <a href="#business">Business</a>
         <a href="#contact">Contact</a>
@@ -35,20 +38,23 @@
       <div class="container hero-grid">
         <div class="hero-copy">
           <span class="eyebrow">COMPLETE ELECTRICAL SOLUTION</span>
-          <h1>Electrical products, <em>found faster.</em></h1>
-          <p>Winding wire, circuit protection, control panels, automation, motors, repair spares, lighting and electronics — all from YK Electric.</p>
+          <h1>Modern electrical shopping for <em>Nepal.</em></h1>
+          <p>Discover protection devices, control products, capacitors, winding wire, automation items, bearings, motors and electronics — all in one clean catalog.</p>
+
           <div class="hero-search">
-            <input id="heroSearch" placeholder="Search MCB, 6204 bearing, contactor, capacitor…" />
+            <input id="heroSearch" placeholder="Search MCB, Selec timer, 6204 bearing, capacitor…" />
             <button id="heroSearchBtn">Find product</button>
           </div>
+
           <div class="hero-actions">
             <a class="btn primary" href="#products">Browse catalog</a>
-            <a class="btn ghost" href="#contact">Request a product</a>
+            <a class="btn ghost" href="#featured">View featured items</a>
           </div>
-          <div class="proof">
-            <div><strong>Wide catalog</strong><span>Electrical + electronic</span></div>
-            <div><strong>Professional supply</strong><span>Home + industry</span></div>
-            <div><strong>Nepal focused</strong><span>Local support & delivery</span></div>
+
+          <div class="hero-stats">
+            <div><strong>24+</strong><span>starter products</span></div>
+            <div><strong>8</strong><span>main categories</span></div>
+            <div><strong>WhatsApp</strong><span>easy ordering</span></div>
           </div>
         </div>
 
@@ -56,21 +62,45 @@
           <img src="assets/yk-hero.svg" alt="Illustration of electrical products including breaker, contactor, cable and meter" />
           <div class="float-card one"><span>⚡</span><b>Protection</b><small>MCB · MCCB · RCCB</small></div>
           <div class="float-card two"><span>⌁</span><b>Automation</b><small>Sensor · Timer · VFD</small></div>
+          <div class="float-card three"><span>◫</span><b>Capacitors</b><small>Motor · Submersible</small></div>
         </div>
       </div>
     </section>
 
-    <section class="ticker" aria-label="Product families">
-      <div class="ticker-track">WINDING WIRE <i>•</i> MCB / MCCB <i>•</i> CONTACTORS <i>•</i> CAPACITORS <i>•</i> BEARINGS <i>•</i> VFD <i>•</i> SENSORS <i>•</i> MOTORS & PUMPS <i>•</i> LED & ELECTRONICS</div>
+    <section class="brand-strip" aria-label="Brands available">
+      <div class="container brand-strip-inner" id="brandStrip"></div>
+    </section>
+
+    <section class="section collections" id="collections">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">SHOP BY COLLECTION</span>
+            <h2>Curated for how customers actually buy.</h2>
+          </div>
+          <p>Whether you are buying for a home, workshop, factory or repair work, start from the right collection.</p>
+        </div>
+        <div class="collection-grid" id="collectionGrid"></div>
+      </div>
     </section>
 
     <section class="section" id="categories">
       <div class="container">
         <div class="section-head">
           <div><span class="eyebrow">SHOP BY CATEGORY</span><h2>Built for technicians, homes and industry.</h2></div>
-          <p>Browse the major electrical and electronic product families available through YK Electric.</p>
+          <p>Browse core electrical and electronic product families available through YK Electric.</p>
         </div>
         <div class="category-grid" id="categoryGrid"></div>
+      </div>
+    </section>
+
+    <section class="section featured" id="featured">
+      <div class="container">
+        <div class="section-head">
+          <div><span class="eyebrow">FEATURED PRODUCTS</span><h2>Popular and high-demand items.</h2></div>
+          <p>A quick starting point for the products customers most often recognize and request.</p>
+        </div>
+        <div class="featured-grid" id="featuredGrid"></div>
       </div>
     </section>
 
@@ -78,7 +108,7 @@
       <div class="container">
         <div class="section-head product-head">
           <div><span class="eyebrow">PRODUCT CATALOG</span><h2>Find the exact product.</h2></div>
-          <label class="catalog-search"><span>⌕</span><input id="catalogSearch" placeholder="Search product, model or application" /></label>
+          <label class="catalog-search"><span>⌕</span><input id="catalogSearch" placeholder="Search product, model, rating, brand or application" /></label>
         </div>
         <div class="filters" id="filters"></div>
         <div class="catalog-meta"><span id="resultCount"></span><span>Contact us for current price and availability</span></div>
@@ -96,8 +126,8 @@
         <div class="business-art"><img src="assets/industry.svg" alt="Industrial control panel illustration" /></div>
         <div>
           <span class="eyebrow light">FOR PROFESSIONAL BUYERS</span>
-          <h2>One place for your electrical requirement.</h2>
-          <p>Contractors, electricians, repair workshops, factories and panel builders can send a complete multi-item requirement for quotation.</p>
+          <h2>One place for your complete electrical requirement.</h2>
+          <p>Contractors, electricians, repair workshops, factories and panel builders can send a full list and receive a consolidated quotation.</p>
           <div class="business-tags"><span>Contractors</span><span>Panel builders</span><span>Factories</span><span>Repair shops</span></div>
           <a class="btn white" href="#contact">Request bulk quotation</a>
         </div>
@@ -130,7 +160,7 @@
   <footer>
     <div class="container footer-grid">
       <div><a class="brand footer-logo" href="#home"><img src="assets/yk-logo.svg" alt="YK Electric logo" /></a><p>Electrical products, automation, motors, repair spares and electronics for Nepal.</p></div>
-      <div><b>Store</b><a href="#categories">Categories</a><a href="#products">Products</a></div>
+      <div><b>Store</b><a href="#collections">Collections</a><a href="#categories">Categories</a><a href="#products">Products</a></div>
       <div><b>Business</b><a href="#business">Bulk quotation</a><a href="#contact">Request product</a><a href="#contact">Contact</a></div>
     </div>
     <div class="container copyright">© <span id="year"></span> YK Electric & Electronic. All rights reserved. <span>Butwal, Nepal</span></div>
