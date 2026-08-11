@@ -41,6 +41,13 @@ html,body{max-width:100%;overflow-x:hidden}.announcement,.site-header,main,foote
   .collection-art{min-height:160px!important;padding:14px!important}
   .collection-art img{max-height:145px!important;width:auto!important}
   .business-card{gap:24px!important}
+  .featured-grid .product-image{height:128px!important}
+  .featured-grid .product-image img{max-height:96px!important}
+  .featured-grid .product-body{padding:13px!important}
+  .featured-grid .product-card h3{font-size:14px!important;margin:7px 0 5px!important}
+  .featured-grid .product-card p{min-height:0!important;margin-top:7px!important;font-size:9px!important;line-height:1.45!important}
+  .featured-grid .product-spec{padding:5px 8px!important;font-size:8px!important}
+  .featured-grid .product-actions{margin-top:10px!important}
 }
 
 @media(max-width:760px){
@@ -58,6 +65,8 @@ html,body{max-width:100%;overflow-x:hidden}.announcement,.site-header,main,foote
   .collection-card{grid-template-columns:1fr!important;min-height:0!important;padding:20px!important}
   .collection-art{min-height:130px!important}
   .collection-art img{max-height:118px!important}
+  .featured-grid .product-image{height:150px!important}
+  .featured-grid .product-image img{max-height:112px!important}
 }
 
 @media(max-width:520px){
