@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 110" role="img" aria-labelledby="title desc">
+  <title id="title">YK Electric logo</title>
+  <desc id="desc">Blue and black YK Electric logo with an electrical lightning motif.</desc>
+  <rect width="520" height="110" rx="18" fill="#ffffff"/>
+  <g transform="translate(10 8)">
+    <path d="M18 8h23l25 31L91 8h23L77 54v36H54V54z" fill="#1264d8"/>
+    <path d="M120 8h22v31l27-31h28l-35 39 38 43h-29l-29-34v34h-22z" fill="#111111"/>
+    <path d="M105 20 88 53h17L91 86l36-45h-20l18-21z" fill="#ffffff" stroke="#1264d8" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M18 94h181" stroke="#1264d8" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" font-weight="800" letter-spacing="1">
+    <text x="220" y="52" font-size="29" fill="#1264d8">YK</text>
+    <text x="270" y="52" font-size="29" fill="#111111">ELECTRIC</text>
+  </g>
+  <text x="221" y="77" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" letter-spacing="3" fill="#52606f">COMPLETE ELECTRICAL SOLUTION</text>
+  <path d="M220 88h282" stroke="#1264d8" stroke-width="3" stroke-linecap="round"/>
+</svg>
