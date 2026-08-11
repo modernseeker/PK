@@ -3,175 +3,176 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#071C33" />
+  <meta name="theme-color" content="#061a2f" />
   <meta name="description" content="YK Electric & Electronic — electrical, automation, motor, repair and electronic products in Nepal." />
-  <title>YK Electric & Electronic | Electrical Store Nepal</title>
+  <title>YK Electric & Electronic | Complete Electrical Solution</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4" />
-  <link rel="stylesheet" href="v2.css?v=4" />
-  <link rel="stylesheet" href="responsive.css?v=4" />
-  <link rel="stylesheet" href="tablet-v3.css?v=4" />
-  <link rel="stylesheet" href="product-detail.css?v=2" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="premium.css?v=1" />
+  <link rel="stylesheet" href="product-detail.css?v=3" />
 </head>
 <body>
-  <div class="announcement">YK Electric & Electronic · Butwal, Nepal <span>Electrical · Automation · Motors · Electronics</span></div>
+  <div class="utility-bar">
+    <div class="container utility-inner">
+      <div class="utility-group">
+        <span class="utility-item">⚡ YK Electric & Electronic · Butwal, Nepal</span>
+        <span class="utility-item"><i class="utility-dot"></i> Complete Electrical Solution</span>
+      </div>
+      <div class="utility-group">
+        <a class="utility-item" href="#business">▣ Business Enquiries</a>
+        <a class="utility-item whatsapp" href="https://wa.me/9779747359443" target="_blank" rel="noopener">● WhatsApp</a>
+      </div>
+    </div>
+  </div>
 
-  <header class="site-header">
-    <div class="container nav-wrap">
-      <a class="brand logo-brand" href="#home" aria-label="YK Electric home">
-        <img src="assets/yk-logo.svg" alt="YK Electric logo" />
-      </a>
-      <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
-      <nav id="nav">
-        <a href="#collections">Collections</a>
-        <a href="#categories">Categories</a>
-        <a href="#featured">Featured</a>
-        <a href="#products">Products</a>
-        <a href="#business">Business</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <button class="cart-btn" id="cartBtn">Request cart <b id="cartCount">0</b></button>
+  <header class="main-header">
+    <div class="container main-header-inner">
+      <a class="logo-link" href="#home"><img src="assets/yk-logo.svg" alt="YK Electric logo"></a>
+      <div class="header-search">
+        <input id="topSearch" type="search" placeholder="Search products, brands, categories…">
+        <button id="topSearchButton" type="button">Search</button>
+      </div>
+      <div class="header-actions">
+        <button class="header-action" id="cartBtn" type="button">▢ Request Cart <span class="count" id="cartCount">0</span></button>
+        <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu">☰</button>
+      </div>
     </div>
   </header>
 
+  <div class="nav-bar">
+    <div class="container nav-inner">
+      <button class="all-cat" id="allCategoriesButton" type="button">☷ All Categories</button>
+      <nav class="nav-links" id="nav">
+        <a class="active" href="#home">Home</a>
+        <a href="#categoryRail">Categories</a>
+        <a href="#featured">Products</a>
+        <a href="#brands">Brands</a>
+        <a href="#business">Business</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </div>
+
   <main>
-    <section class="hero" id="home">
-      <div class="container hero-grid">
-        <div class="hero-copy">
-          <span class="eyebrow">COMPLETE ELECTRICAL SOLUTION</span>
-          <h1>Modern electrical shopping for <em>Nepal.</em></h1>
-          <p>Discover protection devices, control products, capacitors, winding wire, automation items, bearings, motors and electronics — all in one clean catalog.</p>
-
-          <div class="hero-search">
-            <input id="heroSearch" placeholder="Search MCB, Selec timer, 6204 bearing, capacitor…" />
-            <button id="heroSearchBtn">Find product</button>
+    <section class="hero-shell" id="home">
+      <div class="hero">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <span class="eyebrow">COMPLETE ELECTRICAL SOLUTION</span>
+            <h1>Trusted Products.<br>Powering <span>Nepal.</span></h1>
+            <p>Your one place for electrical, automation, motors, wires, protection devices, capacitors, repair spares and more.</p>
+            <div class="hero-benefits">
+              <span class="benefit"><i>◉</i> Brand-matched products</span>
+              <span class="benefit"><i>◉</i> Current price confirmation</span>
+              <span class="benefit"><i>◉</i> Technical product guidance</span>
+            </div>
+            <div class="hero-search">
+              <input id="heroSearch" type="search" placeholder="Search for products, brands…">
+              <select aria-label="Product category"><option>All Categories</option><option>Protection</option><option>Automation</option><option>Wires & Cables</option></select>
+              <button id="heroSearchBtn" type="button">Find Product</button>
+            </div>
           </div>
 
-          <div class="hero-actions">
-            <a class="btn primary" href="#products">Browse catalog</a>
-            <a class="btn ghost" href="#featured">View featured items</a>
-          </div>
-
-          <div class="hero-stats">
-            <div><strong>24+</strong><span>starter products</span></div>
-            <div><strong>8</strong><span>main categories</span></div>
-            <div><strong>WhatsApp</strong><span>easy ordering</span></div>
+          <div class="hero-art" aria-label="Electrical product showcase">
+            <div class="hero-product wire"><img id="heroWire" src="https://rameshcorp.com/assets/new_pages/images/litmus/products/bigwire.png" alt="Copper winding wire"></div>
+            <div class="hero-product mcb"><img id="heroMcb" src="https://www.chintglobal.com/content/dam/chint/global/product-center/low-voltage/iec/final-power-distribution/mcb/nb1-63g/product-image/NB1-63G%20%20C63%201P-MCB-Front.png" alt="CHINT miniature circuit breaker"></div>
+            <div class="hero-product contactor"><img id="heroContactor" src="https://www.chintglobal.com/content/dam/chint/global/product-center/low-voltage/iec/industrial-control/ac-contactor/nc1/product-image/new/NC1-09N-AC%20Contactor-1.jpg" alt="CHINT contactor"></div>
+            <div class="hero-product cap"><img id="heroCap" src="https://www.tibcon.net/images/a57ce4dc6c9c470d9edc182ce6ef5a3b.png" alt="Motor run capacitor"></div>
+            <div class="hero-product motor local"><img id="heroMotor" src="assets/product-motor.svg" alt="Electric motor"></div>
           </div>
         </div>
+      </div>
 
-        <div class="hero-visual" aria-label="Electrical product illustration">
-          <img src="assets/yk-hero.svg" alt="Illustration of electrical products including breaker, contactor, cable and meter" />
-          <div class="float-card one"><span>⚡</span><b>Protection</b><small>MCB · MCCB · RCCB</small></div>
-          <div class="float-card two"><span>⌁</span><b>Automation</b><small>Sensor · Timer · VFD</small></div>
-          <div class="float-card three"><span>◫</span><b>Capacitors</b><small>Motor · Submersible</small></div>
+      <div class="category-rail" id="categoryRail">
+        <div class="container category-rail-card">
+          <div class="category-grid" id="categoryGrid"></div>
         </div>
       </div>
     </section>
 
-    <section class="brand-strip" aria-label="Brands available">
-      <div class="container brand-strip-inner" id="brandStrip"></div>
-    </section>
-
-    <section class="section collections" id="collections">
+    <section class="white-section brands-section" id="brands">
       <div class="container">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">SHOP BY COLLECTION</span>
-            <h2>Curated for how customers actually buy.</h2>
-          </div>
-          <p>Whether you are buying for a home, workshop, factory or repair work, start from the right collection.</p>
-        </div>
-        <div class="collection-grid" id="collectionGrid"></div>
+        <div class="section-kicker-row"><h2>Our Trusted Brands</h2><a class="section-link" href="#products">View all brands</a></div>
+        <div class="brand-panel"><div class="brand-strip-inner" id="brandStrip"></div></div>
       </div>
     </section>
 
-    <section class="section" id="categories">
+    <section class="white-section trending" id="featured">
       <div class="container">
-        <div class="section-head">
-          <div><span class="eyebrow">SHOP BY CATEGORY</span><h2>Built for technicians, homes and industry.</h2></div>
-          <p>Browse core electrical and electronic product families available through YK Electric.</p>
-        </div>
-        <div class="category-grid" id="categoryGrid"></div>
-      </div>
-    </section>
-
-    <section class="section featured" id="featured">
-      <div class="container">
-        <div class="section-head">
-          <div><span class="eyebrow">FEATURED PRODUCTS</span><h2>Popular and high-demand items.</h2></div>
-          <p>A quick starting point for the products customers most often recognize and request.</p>
+        <div class="section-kicker-row">
+          <div><h2 class="section-title">Trending Products</h2><p class="section-sub">Commonly requested electrical and repair products</p></div>
+          <a class="section-link" href="#products">View all products</a>
         </div>
         <div class="featured-grid" id="featuredGrid"></div>
+
+        <div class="service-strip">
+          <div class="service-item"><span class="service-icon">▣</span><div><strong>Delivery Coordination</strong><span>Arrange delivery across Nepal</span></div></div>
+          <div class="service-item"><span class="service-icon">⌘</span><div><strong>Technical Guidance</strong><span>Help matching specifications</span></div></div>
+          <div class="service-item"><span class="service-icon">↻</span><div><strong>Request Cart</strong><span>Build a multi-item enquiry</span></div></div>
+          <div class="service-item"><span class="service-icon">▤</span><div><strong>Bulk Quotations</strong><span>For trade and project requirements</span></div></div>
+        </div>
       </div>
     </section>
 
-    <section class="section catalog" id="products">
+    <section class="catalog" id="products">
       <div class="container">
-        <div class="section-head product-head">
-          <div><span class="eyebrow">PRODUCT CATALOG</span><h2>Find the exact product.</h2></div>
-          <label class="catalog-search"><span>⌕</span><input id="catalogSearch" placeholder="Search product, model, rating, brand or application" /></label>
+        <div class="catalog-head">
+          <div><span class="section-link">FULL CATALOG</span><h2 class="section-title">Find the exact electrical product.</h2><p class="section-sub">Search by brand, model, rating, size or application.</p></div>
+          <label class="catalog-search"><span>⌕</span><input id="catalogSearch" type="search" placeholder="Search product, model or rating"></label>
         </div>
         <div class="filters" id="filters"></div>
-        <div class="catalog-meta"><span id="resultCount"></span><span>Click a product to view options and details</span></div>
+        <div class="catalog-meta"><span id="resultCount"></span><span>Click a product to view specifications</span></div>
         <div class="product-grid" id="productGrid"></div>
-        <div class="empty" id="emptyState" hidden>
-          <h3>Not listed yet?</h3>
-          <p>Send the model, photo, rating or specification and we’ll help you find it.</p>
-          <a class="btn primary" href="#contact">Contact YK Electric</a>
-        </div>
+        <div class="empty" id="emptyState" hidden><h3>Not listed yet?</h3><p>Send the model, rating or photo on WhatsApp and we’ll help identify it.</p><a class="btn primary" href="https://wa.me/9779747359443" target="_blank" rel="noopener">Ask YK Electric</a></div>
       </div>
     </section>
 
-    <section class="section business" id="business">
+    <section class="business-wrap" id="business">
       <div class="container business-card">
-        <div class="business-art"><img src="assets/industry.svg" alt="Industrial control panel illustration" /></div>
         <div>
-          <span class="eyebrow light">FOR PROFESSIONAL BUYERS</span>
-          <h2>One place for your complete electrical requirement.</h2>
-          <p>Contractors, electricians, repair workshops, factories and panel builders can send a full list and receive a consolidated quotation.</p>
-          <div class="business-tags"><span>Contractors</span><span>Panel builders</span><span>Factories</span><span>Repair shops</span></div>
-          <a class="btn white" href="https://wa.me/9779747359443" target="_blank" rel="noopener">Request bulk quotation</a>
+          <span class="section-link">BUSINESS & PROJECT SUPPORT</span>
+          <h2>More than a product list.</h2>
+          <p>YK Electric can handle consolidated requirements from contractors, panel builders, workshops and industrial customers.</p>
+          <a class="btn primary" href="https://wa.me/9779747359443" target="_blank" rel="noopener">Request Bulk Quotation</a>
+        </div>
+        <div class="business-points">
+          <div class="business-point"><b>Wide Product Range</b><span>From basic electrical to industrial control.</span></div>
+          <div class="business-point"><b>Product Matching</b><span>Match model, current, voltage and application.</span></div>
+          <div class="business-point"><b>Project Requirements</b><span>Send one complete material requirement.</span></div>
+          <div class="business-point"><b>WhatsApp Support</b><span>Quick communication for product enquiries.</span></div>
         </div>
       </div>
     </section>
 
     <section class="contact-band" id="contact">
-      <div class="container contact-band-card">
-        <div class="contact-band-copy">
-          <span class="eyebrow">NEED A PRODUCT?</span>
-          <h2>Talk directly with YK Electric.</h2>
-          <p>Send the model, photo, rating or requirement on WhatsApp for current price and availability.</p>
-        </div>
-        <div class="contact-band-actions">
-          <a class="contact-pill" href="tel:+9779747359443"><small>CALL / WHATSAPP</small><strong id="phoneText">9747359443</strong></a>
-          <a class="contact-pill" href="mailto:ykelectricnepal@gmail.com"><small>EMAIL</small><strong id="emailText">ykelectricnepal@gmail.com</strong></a>
-          <a class="btn primary contact-whatsapp" href="https://wa.me/9779747359443" target="_blank" rel="noopener">Open WhatsApp</a>
-        </div>
+      <div class="container contact-card">
+        <div><h3>Need help choosing a product?</h3><p>Talk directly with YK Electric — Butwal, Nepal · <span id="phoneText">9747359443</span> · <span id="emailText">ykelectricnepal@gmail.com</span></p></div>
+        <div class="contact-actions"><a class="phone" href="tel:+9779747359443">Call YK Electric</a><a class="wa" href="https://wa.me/9779747359443" target="_blank" rel="noopener">Chat on WhatsApp</a></div>
       </div>
     </section>
   </main>
 
-  <footer>
+  <footer class="site-footer">
     <div class="container footer-grid">
-      <div><a class="brand footer-logo" href="#home"><img src="assets/yk-logo.svg" alt="YK Electric logo" /></a><p>Electrical products, automation, motors, repair spares and electronics for Nepal.</p></div>
-      <div><b>Store</b><a href="#collections">Collections</a><a href="#categories">Categories</a><a href="#products">Products</a></div>
-      <div><b>Business</b><a href="#business">Bulk quotation</a><a href="#contact">WhatsApp / Contact</a></div>
+      <div><a class="footer-logo" href="#home"><img src="assets/yk-logo.svg" alt="YK Electric logo"></a><p>Electrical products, automation, motors, repair spares and electronics for Nepal.</p></div>
+      <div class="footer-col"><b>Store</b><a href="#categoryRail">Categories</a><a href="#featured">Trending products</a><a href="#products">Full catalog</a></div>
+      <div class="footer-col"><b>Contact</b><a href="tel:+9779747359443">9747359443</a><a href="mailto:ykelectricnepal@gmail.com">ykelectricnepal@gmail.com</a><a href="#business">Business enquiries</a></div>
     </div>
-    <div class="container copyright">© <span id="year"></span> YK Electric & Electronic. All rights reserved. <span>Butwal, Nepal</span></div>
+    <div class="container copyright"><span>© <span id="year"></span> YK Electric & Electronic. All rights reserved.</span><span>Butwal, Nepal</span></div>
   </footer>
 
   <aside class="drawer" id="drawer" aria-hidden="true">
     <div class="drawer-head"><div><small>YK ELECTRIC</small><h3>Request cart</h3></div><button id="closeCart" aria-label="Close">×</button></div>
     <div class="cart-items" id="cartItems"></div>
-    <div class="drawer-foot"><div class="notice"><b>Current price & availability</b><span>Send the cart to YK Electric on WhatsApp for confirmation.</span></div><button class="btn primary full" id="copyOrder">Send order on WhatsApp</button><button class="btn ghost full" id="clearCart">Clear cart</button><p id="copyStatus"></p></div>
+    <div class="drawer-foot"><div class="notice"><b>Current price & availability</b><span>Send the cart to YK Electric on WhatsApp for confirmation.</span></div><button class="btn primary full" id="copyOrder">Send order on WhatsApp</button><button class="btn ghost full" id="clearCart">Clear cart</button><p class="copy-status" id="copyStatus"></p></div>
   </aside>
   <div class="overlay" id="overlay"></div>
 
-  <script src="app.js?v=4"></script>
-  <script src="real-product-images.js?v=1"></script>
-  <script src="contact.js?v=4"></script>
-  <script src="product-detail.js?v=1"></script>
+  <script src="app.js?v=5"></script>
+  <script src="real-product-images.js?v=2"></script>
+  <script src="contact.js?v=5"></script>
+  <script src="product-detail.js?v=2"></script>
+  <script src="premium.js?v=1"></script>
 </body>
 </html>
