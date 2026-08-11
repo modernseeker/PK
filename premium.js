@@ -6,19 +6,27 @@
     const hero=document.querySelector('.hero');
     if(!hero)return;
     try{
-      const parts=await Promise.all([1,2,3,4,5].map(async i=>{
-        const response=await fetch(`assets/hero-chunk-${i}.txt?v=2`,{cache:'no-store'});
-        if(!response.ok)throw new Error(`Hero chunk ${i} failed: ${response.status}`);
+      const files=['assets/hero-sharp-a.txt?v=1','assets/hero-sharp-b.txt?v=1'];
+      const parts=await Promise.all(files.map(async file=>{
+        const response=await fetch(file,{cache:'no-store'});
+        if(!response.ok)throw new Error(`Hero asset failed: ${response.status}`);
         return (await response.text()).replace(/\s+/g,'');
       }));
       const data=parts.join('');
-      hero.style.backgroundImage=`url("data:image/webp;base64,${data}")`;
-      hero.style.backgroundSize='cover';
-      hero.style.backgroundRepeat='no-repeat';
-      hero.style.backgroundPosition=window.matchMedia('(max-width:760px)').matches?'58% center':'center center';
-      hero.dataset.heroLoaded='true';
+      let image=hero.querySelector('.hero-banner-img');
+      if(!image){
+        image=document.createElement('img');
+        image.className='hero-banner-img';
+        image.alt='Trusted Products. Powering Nepal. Complete electrical solution from YK Electric.';
+        image.decoding='async';
+        image.fetchPriority='high';
+        hero.prepend(image);
+      }
+      image.src=`data:image/webp;base64,${data}`;
+      hero.style.backgroundImage='none';
+      hero.dataset.heroLoaded='sharp';
     }catch(error){
-      console.error('YK hero banner failed to reconstruct',error);
+      console.error('YK sharp hero banner failed to load',error);
     }
   }
 
