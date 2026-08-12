@@ -1,6 +1,9 @@
 (()=>{
   const topInput=document.getElementById('topSearch');
   const topButton=document.getElementById('topSearchButton');
+  const heroInput=document.getElementById('heroSearch');
+  const heroButton=document.getElementById('heroSearchBtn');
+  const heroCategory=document.getElementById('heroCategory');
 
   async function readHeroParts(files){
     const parts=await Promise.all(files.map(async file=>{
@@ -41,18 +44,29 @@
     }
   }
 
-  function runTopSearch(){
-    const q=(topInput?.value||'').trim();
+  function searchCatalog(query){
     const catalog=document.getElementById('catalogSearch');
     if(catalog){
-      catalog.value=q;
+      catalog.value=query;
       catalog.dispatchEvent(new Event('input',{bubbles:true}));
     }
     document.getElementById('products')?.scrollIntoView({behavior:'smooth'});
   }
 
+  function runTopSearch(){
+    searchCatalog((topInput?.value||'').trim());
+  }
+
+  function runHeroSearch(){
+    const query=(heroInput?.value||'').trim();
+    const category=(heroCategory?.value||'').trim();
+    searchCatalog([query,category].filter(Boolean).join(' '));
+  }
+
   topButton?.addEventListener('click',runTopSearch);
   topInput?.addEventListener('keydown',e=>{if(e.key==='Enter')runTopSearch()});
+  heroButton?.addEventListener('click',runHeroSearch);
+  heroInput?.addEventListener('keydown',e=>{if(e.key==='Enter')runHeroSearch()});
   document.getElementById('allCategoriesButton')?.addEventListener('click',()=>document.getElementById('categoryRail')?.scrollIntoView({behavior:'smooth'}));
 
   const fallbackMap={
