@@ -1,6 +1,6 @@
 (()=>{
 const realImages={
-  1:{url:"https://rameshcorp.com/assets/new_pages/images/litmus/products/bigwire.png",source:"Litmus / Lotus official",fallback:"assets/product-wire.svg"},
+  1:{url:"https://rameshcorp.com/assets/new_pages/images/litmus/products/wireroll.jpg",backupUrl:"https://rameshcorp.com/assets/new_pages/images/litmus/products/bigwire.png",source:"Ramesh Corp / Lotus Winding Wires official",fallback:"assets/product-wire.svg"},
   3:{url:"https://rameshcorp.com/assets/new_pages/images/litmus/products/newfr.png",source:"Litmus official",fallback:"assets/product-wire.svg"},
   4:{url:"https://www.chintglobal.com/content/dam/chint/global/product-center/low-voltage/iec/final-power-distribution/mcb/nb1-63g/product-image/NB1-63G%20%20C63%201P-MCB-Front.png",source:"CHINT official",fallback:"assets/product-breaker.svg"},
   5:{url:"https://www.chintglobal.com/content/dam/chint/global/product-center/low-voltage/iec/secondary-power-distribution/mccb/nm8n/product-image/new/NM8N-125S%204P-MCCB-1.png",source:"CHINT official",fallback:"assets/product-breaker.svg"},
@@ -10,6 +10,8 @@ const realImages={
   18:{url:"https://www.tibcon.net/images/3dd9fff8cd0c9b681509ac561fd67a1b.png",source:"TIBCON official",fallback:"assets/product-capacitor.svg"}
 };
 
+const trendingIds=new Set([4,8,16,1]);
+
 if(typeof products!=="undefined"){
   products.forEach(p=>{
     const real=realImages[p.id];
@@ -17,6 +19,7 @@ if(typeof products!=="undefined"){
     p.fallbackImg=p.img||real.fallback;
     p.img=real.url;
     p.imageSource=real.source;
+    p.realProductImage=true;
   });
 
   try{ if(typeof renderFeatured==="function") renderFeatured(); }catch(e){}
@@ -25,15 +28,38 @@ if(typeof products!=="undefined"){
 
 const normalized={};
 Object.entries(realImages).forEach(([id,item])=>{
-  try{ normalized[new URL(item.url,location.href).href]={id:Number(id),fallback:item.fallback}; }catch(e){}
+  try{ normalized[new URL(item.url,location.href).href]={id:Number(id),item}; }catch(e){}
+  if(item.backupUrl){
+    try{ normalized[new URL(item.backupUrl,location.href).href]={id:Number(id),item,backup:true}; }catch(e){}
+  }
 });
+
+function decorateRealProductImages(){
+  document.querySelectorAll('.product-card img').forEach(img=>{
+    const match=normalized[img.src];
+    if(!match) return;
+    img.dataset.realProductImage='1';
+    img.decoding='async';
+    if(trendingIds.has(match.id)) img.fetchPriority='high';
+  });
+}
+
+decorateRealProductImages();
+requestAnimationFrame(decorateRealProductImages);
 
 document.addEventListener("error",e=>{
   const img=e.target;
   if(!(img instanceof HTMLImageElement)) return;
   const match=normalized[img.src];
-  if(!match||img.dataset.realFallbackDone) return;
+  if(!match) return;
+  const {item}=match;
+  if(item.backupUrl&&!img.dataset.realBackupDone){
+    img.dataset.realBackupDone="1";
+    img.src=item.backupUrl;
+    return;
+  }
+  if(img.dataset.realFallbackDone) return;
   img.dataset.realFallbackDone="1";
-  img.src=match.fallback;
+  img.src=item.fallback;
 },true);
 })();
