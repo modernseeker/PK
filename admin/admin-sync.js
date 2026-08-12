@@ -16,6 +16,11 @@
     {name:'Lighting & Electronics',icon:'✦',desc:'LED lighting, drivers, electronic parts and selected HT items.',image:'assets/product-light.svg'}
   ];
 
+  const authScript=document.createElement('script');
+  authScript.src='admin-auth.js?v=2';
+  authScript.async=false;
+  document.head.appendChild(authScript);
+
   const $=s=>document.querySelector(s);
   let lastLive=null;
 
@@ -23,146 +28,85 @@
     const el=$('#syncStatus');
     if(el){el.textContent=message;el.dataset.type=type;}
     const notice=$('.local-notice');
-    if(notice){
-      notice.innerHTML=`<b>${type==='ok'?'Live publishing connected':type==='error'?'Publishing needs attention':'Draft + Live publishing'}</b><span>${message}</span>`;
-    }
+    if(notice){notice.innerHTML=`<b>${type==='ok'?'Live publishing connected':type==='error'?'Publishing needs attention':'Draft + Live publishing'}</b><span>${message}</span>`;}
+  }
+
+  function renderIdentity(){
+    const el=$('#syncIdentity');
+    if(!el)return;
+    const user=window.YKAdminAuth?.getUser?.();
+    el.innerHTML=user?`Authenticated as <b>${user.login}</b>. Publishing is authorized only while this secure admin session remains active.`:'Sign in through the secure admin screen to enable GitHub publishing.';
   }
 
   function injectUI(){
     const actions=$('.topbar-actions');
     if(actions&&!$('#publishLiveBtn')){
-      const load=document.createElement('button');
-      load.className='ghost-btn';
-      load.id='loadLiveBtn';
-      load.textContent='↻ Load Live';
-      const publish=document.createElement('button');
-      publish.className='primary-btn';
-      publish.id='publishLiveBtn';
-      publish.textContent='↑ Publish Live';
-      actions.insertBefore(load,actions.firstChild);
-      actions.insertBefore(publish,load.nextSibling);
-      load.onclick=loadLiveIntoAdmin;
-      publish.onclick=publishLive;
+      const load=document.createElement('button');load.className='ghost-btn';load.id='loadLiveBtn';load.textContent='↻ Load Live';
+      const publish=document.createElement('button');publish.className='primary-btn';publish.id='publishLiveBtn';publish.textContent='↑ Publish Live';
+      actions.insertBefore(load,actions.firstChild);actions.insertBefore(publish,load.nextSibling);
+      load.onclick=loadLiveIntoAdmin;publish.onclick=publishLive;
     }
 
     const settings=$('#page-settings');
     if(settings&&!$('#githubSyncCard')){
       const card=document.createElement('article');
-      card.className='settings-card github-sync-card';
-      card.id='githubSyncCard';
+      card.className='settings-card github-sync-card';card.id='githubSyncCard';
       card.innerHTML=`
-        <div class="panel-head"><div><h2>Live Publishing</h2><p>Publish this admin draft to the shared storefront data file in GitHub.</p></div><span class="counter-pill">GitHub</span></div>
-        <div class="field-grid">
-          <label class="wide"><span>Fine-grained GitHub token</span><input id="githubToken" type="password" autocomplete="off" placeholder="github_pat_…"></label>
-          <div class="wide sync-help">Use a fine-grained token limited to <b>${REPO}</b> with <b>Contents: Read and write</b>. The token is stored only for this browser tab/session and is never committed to the repository.</div>
-        </div>
-        <div class="sync-row"><span id="syncStatus" data-type="info">Not connected yet.</span><div><button type="button" class="ghost-btn" id="testGithubBtn">Test connection</button><button type="button" class="primary-btn" id="publishFromSettingsBtn">Publish Live</button></div></div>`;
+        <div class="panel-head"><div><h2>Live Publishing</h2><p>Publish this admin draft to the shared storefront data file in GitHub.</p></div><span class="counter-pill">Protected</span></div>
+        <div class="sync-help" id="syncIdentity">Sign in through the secure admin screen to enable GitHub publishing.</div>
+        <div class="sync-row"><span id="syncStatus" data-type="info">Waiting for authenticated admin session.</span><div><button type="button" class="ghost-btn" id="testGithubBtn">Test connection</button><button type="button" class="primary-btn" id="publishFromSettingsBtn">Publish Live</button></div></div>`;
       settings.appendChild(card);
-      const saved=sessionStorage.getItem(TOKEN_KEY)||'';
-      $('#githubToken').value=saved;
-      $('#githubToken').addEventListener('input',e=>sessionStorage.setItem(TOKEN_KEY,e.target.value.trim()));
-      $('#testGithubBtn').onclick=testConnection;
-      $('#publishFromSettingsBtn').onclick=publishLive;
+      $('#testGithubBtn').onclick=testConnection;$('#publishFromSettingsBtn').onclick=publishLive;
     }
-
     const notice=$('.local-notice');
-    if(notice) notice.innerHTML='<b>Draft + Live publishing</b><span>Edit safely here, then press “Publish Live” to update the shared storefront data for every visitor.</span>';
+    if(notice) notice.innerHTML='<b>Secure draft + live publishing</b><span>Only a verified GitHub admin session can publish changes to the shared storefront.</span>';
+    renderIdentity();
   }
 
-  function token(){
-    return ($('#githubToken')?.value||sessionStorage.getItem(TOKEN_KEY)||'').trim();
-  }
+  function token(){return (window.YKAdminAuth?.getToken?.()||sessionStorage.getItem(TOKEN_KEY)||'').trim();}
 
   async function fetchLive(){
     const res=await fetch(`../${STORE_PATH}?v=${Date.now()}`,{cache:'no-store'});
     if(!res.ok) throw new Error(`Could not load live data (${res.status})`);
-    lastLive=await res.json();
-    return lastLive;
+    lastLive=await res.json();return lastLive;
   }
 
-  function toAdminImage(src){
-    const s=String(src||'');
-    return s.startsWith('assets/')?`../${s}`:s;
-  }
-  function toPublicImage(src){
-    const s=String(src||'').trim();
-    return s.startsWith('../assets/')?s.slice(3):s;
-  }
+  function toAdminImage(src){const s=String(src||'');return s.startsWith('assets/')?`../${s}`:s;}
+  function toPublicImage(src){const s=String(src||'').trim();return s.startsWith('../assets/')?s.slice(3):s;}
 
   function liveToAdmin(live){
-    return {
-      products:(live.products||[]).map(p=>({...p,img:toAdminImage(p.img),featured:(live.trending||[]).map(Number).includes(Number(p.id))})),
-      brands:Array.isArray(live.brands)?[...live.brands]:[],
-      settings:{...(live.settings||{})}
-    };
+    return {products:(live.products||[]).map(p=>({...p,img:toAdminImage(p.img),featured:(live.trending||[]).map(Number).includes(Number(p.id))})),brands:Array.isArray(live.brands)?[...live.brands]:[],settings:{...(live.settings||{})}};
   }
 
   function readDraft(){
-    try{
-      const draft=JSON.parse(localStorage.getItem(ADMIN_KEY)||'null');
-      if(draft&&Array.isArray(draft.products)&&Array.isArray(draft.brands)) return draft;
-    }catch(e){}
+    try{const draft=JSON.parse(localStorage.getItem(ADMIN_KEY)||'null');if(draft&&Array.isArray(draft.products)&&Array.isArray(draft.brands)) return draft;}catch(e){}
     throw new Error('Admin draft data is unavailable. Reload the admin page.');
   }
 
   function buildLivePayload(draft,currentLive){
     const trending=draft.products.filter(p=>p.featured).slice(0,4).map(p=>Number(p.id));
-    const products=draft.products.map(p=>({
-      ...p,
-      id:Number(p.id),
-      img:toPublicImage(p.img),
-      featured:trending.includes(Number(p.id)),
-      price:String(p.price||'Price on request'),
-      stock:String(p.stock||'Check Stock'),
-      tags:String(p.tags||`${p.brand||''} ${p.name||''} ${p.model||''} ${p.spec||''}`).trim()
-    }));
-    return {
-      version:Number(currentLive?.version||0)+1,
-      updatedAt:new Date().toISOString(),
-      settings:{...(draft.settings||{})},
-      brands:[...new Set(draft.brands.filter(Boolean))],
-      categories:Array.isArray(currentLive?.categories)&&currentLive.categories.length?currentLive.categories:categories,
-      trending,
-      products
-    };
+    const products=draft.products.map(p=>({...p,id:Number(p.id),img:toPublicImage(p.img),featured:trending.includes(Number(p.id)),price:String(p.price||'Price on request'),stock:String(p.stock||'Check Stock'),tags:String(p.tags||`${p.brand||''} ${p.name||''} ${p.model||''} ${p.spec||''}`).trim()}));
+    return {version:Number(currentLive?.version||0)+1,updatedAt:new Date().toISOString(),settings:{...(draft.settings||{})},brands:[...new Set(draft.brands.filter(Boolean))],categories:Array.isArray(currentLive?.categories)&&currentLive.categories.length?currentLive.categories:categories,trending,products};
   }
 
   function encodeBase64(text){
-    const bytes=new TextEncoder().encode(text);
-    let binary='';
-    const chunk=0x8000;
+    const bytes=new TextEncoder().encode(text);let binary='';const chunk=0x8000;
     for(let i=0;i<bytes.length;i+=chunk) binary+=String.fromCharCode(...bytes.subarray(i,i+chunk));
     return btoa(binary);
   }
 
   async function githubRequest(url,options={}){
-    const t=token();
-    if(!t) throw new Error('Enter your fine-grained GitHub token in Settings → Live Publishing first.');
-    sessionStorage.setItem(TOKEN_KEY,t);
-    const res=await fetch(url,{
-      ...options,
-      headers:{
-        'Accept':'application/vnd.github+json',
-        'Authorization':`Bearer ${t}`,
-        'X-GitHub-Api-Version':'2022-11-28',
-        ...(options.headers||{})
-      }
-    });
+    if(!window.YKAdminAuth?.isAuthenticated?.()) throw new Error('Your secure admin session is locked. Sign in again before publishing.');
+    const t=token();if(!t) throw new Error('Authenticated GitHub credential is unavailable. Sign in again.');
+    const res=await fetch(url,{...options,headers:{'Accept':'application/vnd.github+json','Authorization':`Bearer ${t}`,'X-GitHub-Api-Version':'2022-11-28',...(options.headers||{})}});
     const body=await res.json().catch(()=>({}));
     if(!res.ok) throw new Error(body.message||`GitHub request failed (${res.status})`);
     return body;
   }
 
   async function testConnection(){
-    try{
-      status('Testing GitHub access…');
-      const file=await githubRequest(`${API}?ref=${encodeURIComponent(BRANCH)}`);
-      status(`Connected. Live data file found at ${STORE_PATH}.`,'ok');
-      return file;
-    }catch(e){
-      status(e.message,'error');
-      throw e;
-    }
+    try{status('Testing authenticated GitHub access…');const file=await githubRequest(`${API}?ref=${encodeURIComponent(BRANCH)}`);status(`Verified. Live data file found at ${STORE_PATH}.`,'ok');return file;}
+    catch(e){status(e.message,'error');throw e;}
   }
 
   async function publishLive(){
@@ -171,58 +115,27 @@
     try{
       status('Publishing your current admin draft to GitHub…');
       const meta=await githubRequest(`${API}?ref=${encodeURIComponent(BRANCH)}`);
-      let current;
-      try{current=await fetchLive()}catch(e){current=lastLive||{version:0,categories}};
+      let current;try{current=await fetchLive()}catch(e){current=lastLive||{version:0,categories}};
       const payload=buildLivePayload(readDraft(),current);
-      await githubRequest(API,{
-        method:'PUT',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          message:`Publish YK storefront data v${payload.version}`,
-          content:encodeBase64(JSON.stringify(payload,null,2)+'\n'),
-          sha:meta.sha,
-          branch:BRANCH
-        })
-      });
-      lastLive=payload;
-      status(`Published successfully. Storefront data is now v${payload.version}. GitHub Pages may take a short moment to refresh.`,'ok');
-    }catch(e){
-      console.error(e);
-      status(e.message,'error');
-      alert(`Publish failed: ${e.message}`);
-    }finally{
-      btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.old||'Publish Live'});
-    }
+      await githubRequest(API,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:`Publish YK storefront data v${payload.version}`,content:encodeBase64(JSON.stringify(payload,null,2)+'\n'),sha:meta.sha,branch:BRANCH})});
+      lastLive=payload;status(`Published successfully. Storefront data is now v${payload.version}. GitHub Pages may take a short moment to refresh.`,'ok');
+    }catch(e){console.error(e);status(e.message,'error');alert(`Publish failed: ${e.message}`);}
+    finally{btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.old||'Publish Live'});}
   }
 
   async function loadLiveIntoAdmin(){
+    if(!window.YKAdminAuth?.isAuthenticated?.()){alert('Sign in to the secure admin session first.');return;}
     if(!confirm('Replace this browser’s current admin draft with the latest live storefront data?')) return;
-    try{
-      status('Loading current live storefront data…');
-      const live=await fetchLive();
-      localStorage.setItem(ADMIN_KEY,JSON.stringify(liveToAdmin(live)));
-      sessionStorage.setItem('yk_admin_loaded_live','1');
-      location.reload();
-    }catch(e){
-      status(e.message,'error');
-      alert(e.message);
-    }
+    try{status('Loading current live storefront data…');const live=await fetchLive();localStorage.setItem(ADMIN_KEY,JSON.stringify(liveToAdmin(live)));sessionStorage.setItem('yk_admin_loaded_live','1');location.reload();}
+    catch(e){status(e.message,'error');alert(e.message);}
   }
 
   async function bootstrapFromLiveIfNeeded(){
     if(localStorage.getItem(ADMIN_KEY)) return;
-    try{
-      const live=await fetchLive();
-      localStorage.setItem(ADMIN_KEY,JSON.stringify(liveToAdmin(live)));
-      if(!sessionStorage.getItem('yk_admin_bootstrapped')){
-        sessionStorage.setItem('yk_admin_bootstrapped','1');
-        location.reload();
-      }
-    }catch(e){
-      console.warn('Using built-in admin seed because live data could not be loaded.',e);
-    }
+    try{const live=await fetchLive();localStorage.setItem(ADMIN_KEY,JSON.stringify(liveToAdmin(live)));if(!sessionStorage.getItem('yk_admin_bootstrapped')){sessionStorage.setItem('yk_admin_bootstrapped','1');location.reload();}}
+    catch(e){console.warn('Using built-in admin seed because live data could not be loaded.',e);}
   }
 
-  injectUI();
-  bootstrapFromLiveIfNeeded();
+  document.addEventListener('yk-admin-authenticated',()=>{renderIdentity();status('Authenticated admin session active. Live publishing is available.','ok');});
+  injectUI();bootstrapFromLiveIfNeeded();
 })();
