@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="premium.css?v=2" />
   <link rel="stylesheet" href="product-detail.css?v=3" />
   <link rel="stylesheet" href="premium-fixes.css?v=3" />
-  <link rel="stylesheet" href="hero-image.css?v=9" />
+  <link rel="stylesheet" href="hero-image.css?v=10" />
 </head>
 <body>
   <div class="utility-bar">
@@ -60,9 +60,30 @@
     <section class="hero-shell" id="home">
       <div class="hero" role="img" aria-label="Trusted Products. Powering Nepal. Complete electrical solution from YK Electric.">
         <div class="container hero-inner">
-          <div hidden aria-hidden="true">
-            <input id="heroSearch" value="">
-            <button id="heroSearchBtn" type="button"></button>
+          <div class="hero-overlay" aria-label="Product search">
+            <div class="hero-benefits" aria-label="YK Electric benefits">
+              <span><i></i>Brand-matched products</span>
+              <span><i></i>Current price confirmation</span>
+              <span><i></i>Technical product guidance</span>
+            </div>
+            <div class="hero-search-overlay">
+              <label class="hero-search-field" for="heroSearch">
+                <span class="hero-search-icon">⌕</span>
+                <input id="heroSearch" type="search" placeholder="Search for products, brands…" autocomplete="off">
+              </label>
+              <select id="heroCategory" class="hero-category-select" aria-label="Product category">
+                <option value="">All Categories</option>
+                <option value="Wires & Cables">Wires & Cables</option>
+                <option value="Protection">Protection</option>
+                <option value="Control & Panel">Control & Panel</option>
+                <option value="Automation">Automation</option>
+                <option value="Capacitors">Capacitors</option>
+                <option value="Motors & Pumps">Motors & Pumps</option>
+                <option value="Bearings & Spares">Bearings & Spares</option>
+                <option value="Lighting & Electronics">Lighting & Electronics</option>
+              </select>
+              <button id="heroSearchBtn" type="button">Find Product</button>
+            </div>
           </div>
         </div>
       </div>
@@ -156,6 +177,6 @@
   <script src="real-product-images.js?v=2"></script>
   <script src="contact.js?v=5"></script>
   <script src="product-detail.js?v=2"></script>
-  <script src="premium.js?v=5"></script>
+  <script src="premium.js?v=6"></script>
 </body>
 </html>
