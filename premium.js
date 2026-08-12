@@ -98,6 +98,20 @@
     });
   }
 
+  function curateTrending(){
+    const grid=document.getElementById('featuredGrid');
+    if(!grid)return;
+    const desired=['Miniature Circuit Breaker (MCB)','AC Contactor','Motor Run Capacitor','Enamel Copper Winding Wire'];
+    const cards=[...grid.querySelectorAll('.product-card.compact')];
+    if(!cards.length)return;
+    const titleOf=card=>card.querySelector('h3')?.textContent.trim()||'';
+    const current=cards.map(titleOf);
+    if(current.length===desired.length&&current.every((name,i)=>name===desired[i]))return;
+    const byTitle=new Map(cards.map(card=>[titleOf(card),card]));
+    cards.forEach(card=>{if(!desired.includes(titleOf(card)))card.remove()});
+    desired.forEach(name=>{const card=byTitle.get(name);if(card)grid.appendChild(card)});
+  }
+
   function enhanceDetail(){
     const wa=document.getElementById('detailWhatsApp');
     if(wa&&wa.textContent.trim()!=='Get Price on WhatsApp')wa.textContent='Get Price on WhatsApp';
@@ -105,8 +119,9 @@
 
   loadHeroBanner();
   enhanceCards();
+  curateTrending();
   enhanceDetail();
 
-  const observer=new MutationObserver(()=>{enhanceCards();enhanceDetail();});
+  const observer=new MutationObserver(()=>{enhanceCards();curateTrending();enhanceDetail();});
   observer.observe(document.body,{childList:true,subtree:true});
 })();
