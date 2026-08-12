@@ -91,7 +91,9 @@
       if(body&&!body.querySelector('.premium-price')){
         const price=document.createElement('div');
         price.className='premium-price';
-        price.innerHTML='<span>Price</span><strong>On request</strong>';
+        price.innerHTML=card.classList.contains('compact')
+          ? '<strong>Rs. Price on request</strong>'
+          : '<span>Price</span><strong>On request</strong>';
         const actions=body.querySelector('.product-actions');
         body.insertBefore(price,actions||null);
       }
@@ -102,9 +104,17 @@
     const grid=document.getElementById('featuredGrid');
     if(!grid||grid.dataset.curated==='1')return;
     if(typeof products==='undefined'||typeof card!=='function'||typeof bind!=='function')return;
-    const desiredIds=[4,8,16,1];
-    const selectedProducts=desiredIds.map(id=>products.find(p=>p.id===id)).filter(Boolean);
-    if(selectedProducts.length!==desiredIds.length)return;
+    const desired=[
+      {id:4,badge:'Top Pick'},
+      {id:8,badge:'Best Seller'},
+      {id:16,badge:'Popular'},
+      {id:1,badge:'Popular'}
+    ];
+    const selectedProducts=desired.map(({id,badge})=>{
+      const p=products.find(item=>item.id===id);
+      return p?{...p,badge}:null;
+    }).filter(Boolean);
+    if(selectedProducts.length!==desired.length)return;
     grid.innerHTML=selectedProducts.map(p=>card(p,true)).join('');
     grid.dataset.curated='1';
     bind(grid);
