@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#071a2e">
+  <title>YK Electric Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css?v=1">
+</head>
+<body>
+  <div class="admin-app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-block">
+        <img src="../assets/yk-logo.svg" alt="YK Electric">
+        <div><strong>YK ADMIN</strong><span>Store Management</span></div>
+      </div>
+
+      <nav class="side-nav" id="sideNav">
+        <button class="nav-item active" data-page="dashboard"><span>▦</span>Dashboard</button>
+        <button class="nav-item" data-page="products"><span>◫</span>Products</button>
+        <button class="nav-item" data-page="categories"><span>⌗</span>Categories</button>
+        <button class="nav-item" data-page="brands"><span>◆</span>Brands</button>
+        <button class="nav-item" data-page="homepage"><span>⌂</span>Homepage</button>
+        <button class="nav-item" data-page="settings"><span>⚙</span>Settings</button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <a href="../" target="_blank" rel="noopener">↗ View Storefront</a>
+        <small>YK Electric & Electronic<br>Butwal, Nepal</small>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+        <div class="topbar-title">
+          <span>YK Electric & Electronic</span>
+          <strong id="pageTitle">Dashboard</strong>
+        </div>
+        <div class="topbar-actions">
+          <button class="ghost-btn" id="exportBtn">Export Data</button>
+          <button class="primary-btn" id="globalAddProduct">＋ Add Product</button>
+        </div>
+      </header>
+
+      <div class="local-notice">
+        <b>Local admin prototype</b>
+        <span>Changes are saved on this device for now. Secure login + cloud database will be the next backend step.</span>
+      </div>
+
+      <section class="page active" id="page-dashboard">
+        <div class="page-heading">
+          <div><p class="eyebrow">OVERVIEW</p><h1>Welcome back.</h1><p>Manage the YK Electric storefront from one place.</p></div>
+          <button class="primary-btn" data-action="add-product">＋ Add Product</button>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card"><span class="stat-icon">◫</span><div><small>Total Products</small><strong id="statProducts">24</strong><em>Catalog items</em></div></article>
+          <article class="stat-card"><span class="stat-icon">◆</span><div><small>Brands</small><strong id="statBrands">8</strong><em>Active brands</em></div></article>
+          <article class="stat-card"><span class="stat-icon">⌗</span><div><small>Categories</small><strong id="statCategories">8</strong><em>Store sections</em></div></article>
+          <article class="stat-card"><span class="stat-icon">★</span><div><small>Trending</small><strong id="statTrending">4</strong><em>Homepage products</em></div></article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="panel-card">
+            <div class="panel-head"><div><h2>Trending Products</h2><p>Products currently prioritized on the homepage.</p></div><button class="text-btn" data-goto="homepage">Manage</button></div>
+            <div id="dashboardTrending" class="mini-product-list"></div>
+          </article>
+          <article class="panel-card">
+            <div class="panel-head"><div><h2>Quick Actions</h2><p>Common storefront tasks.</p></div></div>
+            <div class="quick-actions">
+              <button data-action="add-product"><span>＋</span><b>Add product</b><small>Create a new catalog item</small></button>
+              <button data-goto="products"><span>◫</span><b>Manage catalog</b><small>Edit price, stock and specs</small></button>
+              <button data-goto="brands"><span>◆</span><b>Manage brands</b><small>Organize brand names</small></button>
+              <button data-goto="settings"><span>⚙</span><b>Store settings</b><small>Contact and business details</small></button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="page-products">
+        <div class="page-heading compact">
+          <div><p class="eyebrow">CATALOG</p><h1>Products</h1><p>Add, edit and organize products shown on the storefront.</p></div>
+          <button class="primary-btn" data-action="add-product">＋ Add Product</button>
+        </div>
+
+        <div class="toolbar">
+          <label class="search-box"><span>⌕</span><input id="productSearch" type="search" placeholder="Search product, model or brand"></label>
+          <select id="categoryFilter"><option value="">All categories</option></select>
+          <select id="stockFilter"><option value="">All stock states</option><option>In Stock</option><option>Check Stock</option><option>Out of Stock</option></select>
+        </div>
+
+        <div class="table-card">
+          <div class="table-meta"><span id="productCountText">24 products</span><small>Saved locally on this device</small></div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Product</th><th>Brand</th><th>Category</th><th>Price</th><th>Status</th><th>Trending</th><th></th></tr></thead>
+              <tbody id="productTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-categories">
+        <div class="page-heading compact"><div><p class="eyebrow">ORGANIZE</p><h1>Categories</h1><p>See how the catalog is distributed across store sections.</p></div></div>
+        <div id="categoryCards" class="category-admin-grid"></div>
+      </section>
+
+      <section class="page" id="page-brands">
+        <div class="page-heading compact"><div><p class="eyebrow">PARTNERS</p><h1>Brands</h1><p>Manage the brands shown across the YK Electric catalog.</p></div><button class="primary-btn" id="addBrandBtn">＋ Add Brand</button></div>
+        <div id="brandCards" class="brand-admin-grid"></div>
+      </section>
+
+      <section class="page" id="page-homepage">
+        <div class="page-heading compact"><div><p class="eyebrow">STOREFRONT</p><h1>Homepage</h1><p>Choose which products receive priority placement.</p></div></div>
+        <article class="panel-card">
+          <div class="panel-head"><div><h2>Trending Products</h2><p>Select up to four products for the homepage row.</p></div><span class="counter-pill" id="trendingCounter">4 / 4</span></div>
+          <div id="trendingSelector" class="trending-selector"></div>
+        </article>
+      </section>
+
+      <section class="page" id="page-settings">
+        <div class="page-heading compact"><div><p class="eyebrow">CONFIGURATION</p><h1>Store Settings</h1><p>Basic contact details used by the YK Electric storefront.</p></div></div>
+        <form class="settings-card" id="settingsForm">
+          <div class="field-grid">
+            <label><span>Business name</span><input name="businessName"></label>
+            <label><span>Location</span><input name="location"></label>
+            <label><span>Phone</span><input name="phone"></label>
+            <label><span>WhatsApp</span><input name="whatsapp"></label>
+            <label class="wide"><span>Email</span><input name="email" type="email"></label>
+          </div>
+          <div class="settings-actions"><button type="button" class="danger-link" id="resetAdminData">Reset local admin data</button><button type="submit" class="primary-btn">Save Settings</button></div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="productModal" hidden>
+    <div class="modal-card">
+      <div class="modal-head"><div><small>PRODUCT EDITOR</small><h2 id="modalTitle">Add Product</h2></div><button id="closeModal" aria-label="Close">×</button></div>
+      <form id="productForm">
+        <input type="hidden" name="id">
+        <div class="field-grid">
+          <label class="wide"><span>Product name *</span><input name="name" required placeholder="e.g. Miniature Circuit Breaker"></label>
+          <label><span>Brand *</span><input name="brand" required list="brandOptions"></label>
+          <label><span>Category *</span><select name="cat" required></select></label>
+          <label><span>Model</span><input name="model" placeholder="NB1 Series"></label>
+          <label><span>Specification</span><input name="spec" placeholder="6A–63A • SP/DP"></label>
+          <label><span>Price</span><input name="price" placeholder="Price on request"></label>
+          <label><span>Stock status</span><select name="stock"><option>Check Stock</option><option>In Stock</option><option>Out of Stock</option></select></label>
+          <label><span>Badge</span><input name="badge" placeholder="Top Pick"></label>
+          <label class="wide"><span>Image URL / path</span><input name="img" placeholder="../assets/product-breaker.svg"></label>
+          <label class="wide"><span>Description</span><textarea name="desc" rows="3" placeholder="Short product description"></textarea></label>
+        </div>
+        <label class="toggle-row"><input type="checkbox" name="featured"><span><b>Trending product</b><small>Show this product in homepage priority selection.</small></span></label>
+        <div class="modal-actions"><button type="button" class="ghost-btn" id="cancelModal">Cancel</button><button type="submit" class="primary-btn">Save Product</button></div>
+      </form>
+      <datalist id="brandOptions"></datalist>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script src="admin.js?v=1"></script>
+</body>
+</html>
