@@ -98,12 +98,25 @@
     });
   }
 
+  function renderReferenceTrendingOnce(){
+    const grid=document.getElementById('featuredGrid');
+    if(!grid||grid.dataset.curated==='1')return;
+    if(typeof products==='undefined'||typeof card!=='function'||typeof bind!=='function')return;
+    const desiredIds=[4,8,16,1];
+    const selectedProducts=desiredIds.map(id=>products.find(p=>p.id===id)).filter(Boolean);
+    if(selectedProducts.length!==desiredIds.length)return;
+    grid.innerHTML=selectedProducts.map(p=>card(p,true)).join('');
+    grid.dataset.curated='1';
+    bind(grid);
+  }
+
   function enhanceDetail(){
     const wa=document.getElementById('detailWhatsApp');
     if(wa&&wa.textContent.trim()!=='Get Price on WhatsApp')wa.textContent='Get Price on WhatsApp';
   }
 
   loadHeroBanner();
+  renderReferenceTrendingOnce();
   enhanceCards();
   enhanceDetail();
 
