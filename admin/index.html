@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="admin.css?v=1">
+  <link rel="stylesheet" href="admin-sync.css?v=1">
 </head>
 <body>
   <div class="admin-app">
@@ -48,8 +49,8 @@
       </header>
 
       <div class="local-notice">
-        <b>Local admin prototype</b>
-        <span>Changes are saved on this device for now. Secure login + cloud database will be the next backend step.</span>
+        <b>Draft + Live publishing</b>
+        <span>Edit safely here, then publish the current draft to the shared storefront data.</span>
       </div>
 
       <section class="page active" id="page-dashboard">
@@ -95,7 +96,7 @@
         </div>
 
         <div class="table-card">
-          <div class="table-meta"><span id="productCountText">24 products</span><small>Saved locally on this device</small></div>
+          <div class="table-meta"><span id="productCountText">24 products</span><small>Draft data in this browser</small></div>
           <div class="table-scroll">
             <table>
               <thead><tr><th>Product</th><th>Brand</th><th>Category</th><th>Price</th><th>Status</th><th>Trending</th><th></th></tr></thead>
@@ -165,5 +166,6 @@
 
   <div class="toast" id="toast" role="status"></div>
   <script src="admin.js?v=1"></script>
+  <script src="admin-sync.js?v=1"></script>
 </body>
 </html>
