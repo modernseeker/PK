@@ -1,13 +1,7 @@
 window.YKSupabaseConfig=Object.freeze({
   url:'https://zsubrejbvtorwuxyvrze.supabase.co',
   publishableKey:'sb_publishable_A6Lt2AFWpuXFClk-KNoakA__dNMMaVl',
+  key:'sb_publishable_A6Lt2AFWpuXFClk-KNoakA__dNMMaVl',
   adminEmail:'ykelectricnepal@gmail.com',
   productBucket:'product-images'
 });
-if(window.supabase?.createClient){
-  window.YKSupabase=window.supabase.createClient(
-    window.YKSupabaseConfig.url,
-    window.YKSupabaseConfig.publishableKey,
-    {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}
-  );
-}
