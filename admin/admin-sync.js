@@ -5,7 +5,7 @@
   const $=s=>document.querySelector(s);
 
   const authScript=document.createElement('script');
-  authScript.src='admin-auth.js?v=4';authScript.async=false;document.head.appendChild(authScript);
+  authScript.src='admin-auth.js?v=5';authScript.async=false;document.head.appendChild(authScript);
 
   function status(message,type='info'){
     const el=$('#syncStatus');if(el){el.textContent=message;el.dataset.type=type;}
