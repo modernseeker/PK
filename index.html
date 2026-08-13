@@ -15,165 +15,20 @@
   <link rel="stylesheet" href="hero-image.css?v=14" />
 </head>
 <body>
-  <div class="utility-bar">
-    <div class="container utility-inner">
-      <div class="utility-group">
-        <span class="utility-item">⚡ YK Electric & Electronic · Butwal, Nepal</span>
-        <span class="utility-item"><i class="utility-dot"></i> Complete Electrical Solution</span>
-      </div>
-      <div class="utility-group">
-        <a class="utility-item" href="#business">▣ Business Enquiries</a>
-        <a class="utility-item whatsapp" href="https://wa.me/9779747359443" target="_blank" rel="noopener">● WhatsApp</a>
-      </div>
-    </div>
-  </div>
-
-  <header class="main-header">
-    <div class="container main-header-inner">
-      <a class="logo-link" href="#home"><img src="assets/yk-logo.svg" alt="YK Electric logo"></a>
-      <div class="header-search">
-        <input id="topSearch" type="search" placeholder="Search products, brands, categories…">
-        <button id="topSearchButton" type="button">Search</button>
-      </div>
-      <div class="header-actions">
-        <button class="header-action" id="cartBtn" type="button">▢ Request Cart <span class="count" id="cartCount">0</span></button>
-        <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu">☰</button>
-      </div>
-    </div>
-  </header>
-
-  <div class="nav-bar">
-    <div class="container nav-inner">
-      <button class="all-cat" id="allCategoriesButton" type="button">☷ All Categories</button>
-      <nav class="nav-links" id="nav">
-        <a class="active" href="#home">Home</a>
-        <a href="#categoryRail">Categories</a>
-        <a href="#featured">Products</a>
-        <a href="#brands">Brands</a>
-        <a href="#business">Business</a>
-        <a href="#contact">Contact</a>
-      </nav>
-    </div>
-  </div>
-
+  <div class="utility-bar"><div class="container utility-inner"><div class="utility-group"><span class="utility-item">⚡ YK Electric & Electronic · Butwal, Nepal</span><span class="utility-item"><i class="utility-dot"></i> Complete Electrical Solution</span></div><div class="utility-group"><a class="utility-item" href="#business">▣ Business Enquiries</a><a class="utility-item whatsapp" href="https://wa.me/9779747359443" target="_blank" rel="noopener">● WhatsApp</a></div></div></div>
+  <header class="main-header"><div class="container main-header-inner"><a class="logo-link" href="#home"><img src="assets/yk-logo.svg" alt="YK Electric logo"></a><div class="header-search"><input id="topSearch" type="search" placeholder="Search products, brands, categories…"><button id="topSearchButton" type="button">Search</button></div><div class="header-actions"><button class="header-action" id="cartBtn" type="button">▢ Request Cart <span class="count" id="cartCount">0</span></button><button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu">☰</button></div></div></header>
+  <div class="nav-bar"><div class="container nav-inner"><button class="all-cat" id="allCategoriesButton" type="button">☷ All Categories</button><nav class="nav-links" id="nav"><a class="active" href="#home">Home</a><a href="#categoryRail">Categories</a><a href="#featured">Products</a><a href="#brands">Brands</a><a href="#business">Business</a><a href="#contact">Contact</a></nav></div></div>
   <main>
-    <section class="hero-shell" id="home">
-      <div class="hero" role="img" aria-label="Trusted Products. Powering Nepal. Complete electrical solution from YK Electric.">
-        <div class="container hero-inner">
-          <div class="hero-overlay" aria-label="Product search">
-            <div class="hero-benefits" aria-label="YK Electric benefits">
-              <span><i></i>Brand-matched products</span>
-              <span><i></i>Current price confirmation</span>
-              <span><i></i>Technical product guidance</span>
-            </div>
-            <div class="hero-search-overlay">
-              <label class="hero-search-field" for="heroSearch">
-                <span class="hero-search-icon">⌕</span>
-                <input id="heroSearch" type="search" placeholder="Search for products, brands…" autocomplete="off">
-              </label>
-              <select id="heroCategory" class="hero-category-select" aria-label="Product category">
-                <option value="">All Categories</option>
-                <option value="Wires & Cables">Wires & Cables</option>
-                <option value="Protection">Protection</option>
-                <option value="Control & Panel">Control & Panel</option>
-                <option value="Automation">Automation</option>
-                <option value="Capacitors">Capacitors</option>
-                <option value="Motors & Pumps">Motors & Pumps</option>
-                <option value="Bearings & Spares">Bearings & Spares</option>
-                <option value="Lighting & Electronics">Lighting & Electronics</option>
-              </select>
-              <button id="heroSearchBtn" type="button">Find Product</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="category-rail" id="categoryRail">
-        <div class="container category-rail-card">
-          <div class="category-grid" id="categoryGrid"></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="white-section brands-section" id="brands">
-      <div class="container">
-        <div class="section-kicker-row"><h2>Our Trusted Brands</h2><a class="section-link" href="#products">View all brands</a></div>
-        <div class="brand-panel"><div class="brand-strip-inner" id="brandStrip"></div></div>
-      </div>
-    </section>
-
-    <section class="white-section trending" id="featured">
-      <div class="container">
-        <div class="section-kicker-row">
-          <div><h2 class="section-title">Trending Products</h2><p class="section-sub">Commonly requested electrical and repair products</p></div>
-          <a class="section-link" href="#products">View all products</a>
-        </div>
-        <div class="featured-grid" id="featuredGrid"></div>
-
-        <div class="service-strip">
-          <div class="service-item"><span class="service-icon">▣</span><div><strong>Delivery Coordination</strong><span>Arrange delivery across Nepal</span></div></div>
-          <div class="service-item"><span class="service-icon">⌘</span><div><strong>Technical Guidance</strong><span>Help matching specifications</span></div></div>
-          <div class="service-item"><span class="service-icon">↻</span><div><strong>Request Cart</strong><span>Build a multi-item enquiry</span></div></div>
-          <div class="service-item"><span class="service-icon">▤</span><div><strong>Bulk Quotations</strong><span>For trade and project requirements</span></div></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="catalog" id="products">
-      <div class="container">
-        <div class="catalog-head">
-          <div><span class="section-link">FULL CATALOG</span><h2 class="section-title">Find the exact electrical product.</h2><p class="section-sub">Search by brand, model, rating, size or application.</p></div>
-          <label class="catalog-search"><span>⌕</span><input id="catalogSearch" type="search" placeholder="Search product, model or rating"></label>
-        </div>
-        <div class="filters" id="filters"></div>
-        <div class="catalog-meta"><span id="resultCount"></span><span>Click a product to view specifications</span></div>
-        <div class="product-grid" id="productGrid"></div>
-        <div class="empty" id="emptyState" hidden><h3>Not listed yet?</h3><p>Send the model, rating or photo on WhatsApp and we’ll help identify it.</p><a class="btn primary" href="https://wa.me/9779747359443" target="_blank" rel="noopener">Ask YK Electric</a></div>
-      </div>
-    </section>
-
-    <section class="business-wrap" id="business">
-      <div class="container business-card">
-        <div>
-          <span class="section-link">BUSINESS & PROJECT SUPPORT</span>
-          <h2>More than a product list.</h2>
-          <p>YK Electric can handle consolidated requirements from contractors, panel builders, workshops and industrial customers.</p>
-          <a class="btn primary" href="https://wa.me/9779747359443" target="_blank" rel="noopener">Request Bulk Quotation</a>
-        </div>
-        <div class="business-points">
-          <div class="business-point"><b>Wide Product Range</b><span>From basic electrical to industrial control.</span></div>
-          <div class="business-point"><b>Product Matching</b><span>Match model, current, voltage and application.</span></div>
-          <div class="business-point"><b>Project Requirements</b><span>Send one complete material requirement.</span></div>
-          <div class="business-point"><b>WhatsApp Support</b><span>Quick communication for product enquiries.</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="contact-band" id="contact">
-      <div class="container contact-card">
-        <div><h3>Need help choosing a product?</h3><p>Talk directly with YK Electric — Butwal, Nepal · <span id="phoneText">9747359443</span> · <span id="emailText">ykelectricnepal@gmail.com</span></p></div>
-        <div class="contact-actions"><a class="phone" href="tel:+9779747359443">Call YK Electric</a><a class="wa" href="https://wa.me/9779747359443" target="_blank" rel="noopener">Chat on WhatsApp</a></div>
-      </div>
-    </section>
+    <section class="hero-shell" id="home"><div class="hero" role="img" aria-label="Trusted Products. Powering Nepal. Complete electrical solution from YK Electric."><div class="container hero-inner"><div class="hero-overlay" aria-label="Product search"><div class="hero-benefits" aria-label="YK Electric benefits"><span><i></i>Brand-matched products</span><span><i></i>Current price confirmation</span><span><i></i>Technical product guidance</span></div><div class="hero-search-overlay"><label class="hero-search-field" for="heroSearch"><span class="hero-search-icon">⌕</span><input id="heroSearch" type="search" placeholder="Search for products, brands…" autocomplete="off"></label><select id="heroCategory" class="hero-category-select" aria-label="Product category"><option value="">All Categories</option><option value="Wires & Cables">Wires & Cables</option><option value="Protection">Protection</option><option value="Control & Panel">Control & Panel</option><option value="Automation">Automation</option><option value="Capacitors">Capacitors</option><option value="Motors & Pumps">Motors & Pumps</option><option value="Bearings & Spares">Bearings & Spares</option><option value="Lighting & Electronics">Lighting & Electronics</option></select><button id="heroSearchBtn" type="button">Find Product</button></div></div></div></div><div class="category-rail" id="categoryRail"><div class="container category-rail-card"><div class="category-grid" id="categoryGrid"></div></div></div></section>
+    <section class="white-section brands-section" id="brands"><div class="container"><div class="section-kicker-row"><h2>Our Trusted Brands</h2><a class="section-link" href="#products">View all brands</a></div><div class="brand-panel"><div class="brand-strip-inner" id="brandStrip"></div></div></div></section>
+    <section class="white-section trending" id="featured"><div class="container"><div class="section-kicker-row"><div><h2 class="section-title">Trending Products</h2><p class="section-sub">Commonly requested electrical and repair products</p></div><a class="section-link" href="#products">View all products</a></div><div class="featured-grid" id="featuredGrid"></div><div class="service-strip"><div class="service-item"><span class="service-icon">▣</span><div><strong>Delivery Coordination</strong><span>Arrange delivery across Nepal</span></div></div><div class="service-item"><span class="service-icon">⌘</span><div><strong>Technical Guidance</strong><span>Help matching specifications</span></div></div><div class="service-item"><span class="service-icon">↻</span><div><strong>Request Cart</strong><span>Build a multi-item enquiry</span></div></div><div class="service-item"><span class="service-icon">▤</span><div><strong>Bulk Quotations</strong><span>For trade and project requirements</span></div></div></div></div></section>
+    <section class="catalog" id="products"><div class="container"><div class="catalog-head"><div><span class="section-link">FULL CATALOG</span><h2 class="section-title">Find the exact electrical product.</h2><p class="section-sub">Search by brand, model, rating, size or application.</p></div><label class="catalog-search"><span>⌕</span><input id="catalogSearch" type="search" placeholder="Search product, model or rating"></label></div><div class="filters" id="filters"></div><div class="catalog-meta"><span id="resultCount"></span><span>Click a product to view specifications</span></div><div class="product-grid" id="productGrid"></div><div class="empty" id="emptyState" hidden><h3>Not listed yet?</h3><p>Send the model, rating or photo on WhatsApp and we’ll help identify it.</p><a class="btn primary" href="https://wa.me/9779747359443" target="_blank" rel="noopener">Ask YK Electric</a></div></div></section>
+    <section class="business-wrap" id="business"><div class="container business-card"><div><span class="section-link">BUSINESS & PROJECT SUPPORT</span><h2>More than a product list.</h2><p>YK Electric can handle consolidated requirements from contractors, panel builders, workshops and industrial customers.</p><a class="btn primary" href="https://wa.me/9779747359443" target="_blank" rel="noopener">Request Bulk Quotation</a></div><div class="business-points"><div class="business-point"><b>Wide Product Range</b><span>From basic electrical to industrial control.</span></div><div class="business-point"><b>Product Matching</b><span>Match model, current, voltage and application.</span></div><div class="business-point"><b>Project Requirements</b><span>Send one complete material requirement.</span></div><div class="business-point"><b>WhatsApp Support</b><span>Quick communication for product enquiries.</span></div></div></div></section>
+    <section class="contact-band" id="contact"><div class="container contact-card"><div><h3>Need help choosing a product?</h3><p>Talk directly with YK Electric — Butwal, Nepal · <span id="phoneText">9747359443</span> · <span id="emailText">ykelectricnepal@gmail.com</span></p></div><div class="contact-actions"><a class="phone" href="tel:+9779747359443">Call YK Electric</a><a class="wa" href="https://wa.me/9779747359443" target="_blank" rel="noopener">Chat on WhatsApp</a></div></div></section>
   </main>
-
-  <footer class="site-footer">
-    <div class="container footer-grid">
-      <div><a class="footer-logo" href="#home"><img src="assets/yk-logo.svg" alt="YK Electric logo"></a><p>Electrical products, automation, motors, repair spares and electronics for Nepal.</p></div>
-      <div class="footer-col"><b>Store</b><a href="#categoryRail">Categories</a><a href="#featured">Trending products</a><a href="#products">Full catalog</a></div>
-      <div class="footer-col"><b>Contact</b><a href="tel:+9779747359443">9747359443</a><a href="mailto:ykelectricnepal@gmail.com">ykelectricnepal@gmail.com</a><a href="#business">Business enquiries</a></div>
-    </div>
-    <div class="container copyright"><span>© <span id="year"></span> YK Electric & Electronic. All rights reserved.</span><span>Butwal, Nepal</span></div>
-  </footer>
-
-  <aside class="drawer" id="drawer" aria-hidden="true">
-    <div class="drawer-head"><div><small>YK ELECTRIC</small><h3>Request cart</h3></div><button id="closeCart" aria-label="Close">×</button></div>
-    <div class="cart-items" id="cartItems"></div>
-    <div class="drawer-foot"><div class="notice"><b>Current price & availability</b><span>Send the cart to YK Electric on WhatsApp for confirmation.</span></div><button class="btn primary full" id="copyOrder">Send order on WhatsApp</button><button class="btn ghost full" id="clearCart">Clear cart</button><p class="copy-status" id="copyStatus"></p></div>
-  </aside>
-  <div class="overlay" id="overlay"></div>
-
-  <script src="supabase-config.js?v=2"></script>
+  <footer class="site-footer"><div class="container footer-grid"><div><a class="footer-logo" href="#home"><img src="assets/yk-logo.svg" alt="YK Electric logo"></a><p>Electrical products, automation, motors, repair spares and electronics for Nepal.</p></div><div class="footer-col"><b>Store</b><a href="#categoryRail">Categories</a><a href="#featured">Trending products</a><a href="#products">Full catalog</a></div><div class="footer-col"><b>Contact</b><a href="tel:+9779747359443">9747359443</a><a href="mailto:ykelectricnepal@gmail.com">ykelectricnepal@gmail.com</a><a href="#business">Business enquiries</a></div></div><div class="container copyright"><span>© <span id="year"></span> YK Electric & Electronic. All rights reserved.</span><span>Butwal, Nepal</span></div></footer>
+  <aside class="drawer" id="drawer" aria-hidden="true"><div class="drawer-head"><div><small>YK ELECTRIC</small><h3>Request cart</h3></div><button id="closeCart" aria-label="Close">×</button></div><div class="cart-items" id="cartItems"></div><div class="drawer-foot"><div class="notice"><b>Current price & availability</b><span>Send the cart to YK Electric on WhatsApp for confirmation.</span></div><button class="btn primary full" id="copyOrder">Send order on WhatsApp</button><button class="btn ghost full" id="clearCart">Clear cart</button><p class="copy-status" id="copyStatus"></p></div></aside><div class="overlay" id="overlay"></div>
+  <script src="supabase-config.js?v=3"></script>
   <script src="app.js?v=6"></script>
   <script src="real-product-images.js?v=3"></script>
   <script src="contact.js?v=5"></script>
