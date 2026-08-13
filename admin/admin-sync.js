@@ -17,7 +17,7 @@
   ];
 
   const authScript=document.createElement('script');
-  authScript.src='admin-auth.js?v=2';
+  authScript.src='admin-auth.js?v=3';
   authScript.async=false;
   document.head.appendChild(authScript);
 
@@ -35,7 +35,7 @@
     const el=$('#syncIdentity');
     if(!el)return;
     const user=window.YKAdminAuth?.getUser?.();
-    el.innerHTML=user?`Authenticated as <b>${user.login}</b>. Publishing is authorized only while this secure admin session remains active.`:'Sign in through the secure admin screen to enable GitHub publishing.';
+    el.innerHTML=user?`Authenticated as <b>${user.adminUsername||user.login}</b>. Publishing is authorized only while this secure admin session remains active.`:'Sign in through the secure admin screen to enable GitHub publishing.';
   }
 
   function injectUI(){
@@ -59,7 +59,7 @@
       $('#testGithubBtn').onclick=testConnection;$('#publishFromSettingsBtn').onclick=publishLive;
     }
     const notice=$('.local-notice');
-    if(notice) notice.innerHTML='<b>Secure draft + live publishing</b><span>Only a verified GitHub admin session can publish changes to the shared storefront.</span>';
+    if(notice) notice.innerHTML='<b>Secure draft + live publishing</b><span>Only an authenticated YK Admin session can publish changes to the shared storefront.</span>';
     renderIdentity();
   }
 
