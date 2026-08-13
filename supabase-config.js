@@ -4,3 +4,10 @@ window.YKSupabaseConfig=Object.freeze({
   adminEmail:'ykelectricnepal@gmail.com',
   productBucket:'product-images'
 });
+if(window.supabase?.createClient){
+  window.YKSupabase=window.supabase.createClient(
+    window.YKSupabaseConfig.url,
+    window.YKSupabaseConfig.publishableKey,
+    {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}
+  );
+}
