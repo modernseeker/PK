@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "username": "YK_Nepal",
+  "githubUser": "modernseeker",
+  "repo": "modernseeker/PK",
+  "kdf": "PBKDF2-SHA256",
+  "iterations": 600000,
+  "salt": "Ft1VbKxKom/5oqH5lRP6/w==",
+  "cipher": "AES-256-GCM",
+  "iv": "0Ht0IiGW2bmRHprT",
+  "encryptedToken": "LEXu+ixoPRX5CsdvTjm9V2sPQM6zzOXXkl4L5TGBUjT+ojzD54UflKwZE+rjxWdGxTPvS5VxQe9Mft3tSgkj1LcupP4SP5cNMrhniqkAMrpPik65R1b10bFvSyoI3KCL+t9fRlMvmbRuEOKG5w==",
+  "updatedAt": "2026-08-13T05:32:06.786Z"
+}
