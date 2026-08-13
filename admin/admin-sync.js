@@ -95,8 +95,13 @@
   }
 
   async function testConnection(){
-    try{status('Testing Supabase admin access…');const result=await rest('rpc/is_admin',{method:'POST',body:'{}'});if(result!==true)throw new Error('This account is not an authorized YK administrator.');status('Supabase Auth, database and RLS access verified.','ok');return true;}
-    catch(e){status(e.message,'error');throw e;}
+    try{
+      status('Testing Supabase admin access…');
+      const rows=await rest('admin_profiles?select=user_id,role&limit=1');
+      if(!Array.isArray(rows)||!rows.length)throw new Error('This account is not an authorized YK administrator.');
+      status('Supabase Auth, database and RLS access verified.','ok');
+      return true;
+    }catch(e){status(e.message,'error');throw e;}
   }
 
   function renderIdentity(){
