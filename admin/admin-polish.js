@@ -84,6 +84,15 @@
     document.addEventListener('click',e=>{if(!menu.contains(e.target)&&e.target!==btn)menu.hidden=true});
   }
 
+  function loadQuotationList(){
+    if(!document.querySelector('link[data-yk-quotation-list]')){
+      const link=document.createElement('link');link.rel='stylesheet';link.href='admin-quotation-list.css?v=1';link.dataset.ykQuotationList='1';document.head.appendChild(link);
+    }
+    if(!document.querySelector('script[data-yk-quotation-list]')){
+      const script=document.createElement('script');script.src='admin-quotation-list.js?v=1';script.dataset.ykQuotationList='1';document.body.appendChild(script);
+    }
+  }
+
   function polish(){
     injectMoreMenu();
     reorderDashboardTrending();
@@ -91,6 +100,7 @@
   }
 
   document.addEventListener('DOMContentLoaded',()=>{
+    loadQuotationList();
     polish();
     const holder=$('#dashboardTrending');
     if(holder){
