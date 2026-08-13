@@ -58,7 +58,7 @@
     if(Date.now()-last<20000){error.textContent='Your enquiry was just submitted. Please wait a moment before sending another.';return}
     const requestItems=items();if(!requestItems.length){error.textContent='Your request cart is empty.';return}
     btn.disabled=true;btn.textContent='Sending securely…';error.textContent='';
-    const id=crypto.randomUUID?crypto.randomUUID():`${Date.now()}-0000-4000-8000-${Math.random().toString(16).slice(2,14).padEnd(12,'0')}`;
+    const id=crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0,v=c==='x'?r:(r&3|8);return v.toString(16)});
     try{
       const res=await fetch(`${cfg.url}/rest/v1/rpc/submit_enquiry`,{method:'POST',headers:{apikey:cfg.publishableKey,'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({
         p_enquiry_id:id,p_customer_name:name,p_phone:phone,p_business_name:String(fd.get('business_name')||'').trim()||null,
