@@ -1,0 +1,106 @@
+(()=>{
+  const ADMIN_KEY='yk_admin_state_v1';
+  const PREFERRED_TRENDING=[4,8,16,1];
+  const $=s=>document.querySelector(s);
+
+  function readState(){
+    try{return JSON.parse(localStorage.getItem(ADMIN_KEY)||'null')}catch(e){return null}
+  }
+
+  function fallbackFor(img){
+    const wrap=img.closest('.mini-product,.trend-option,.product-cell,tr');
+    const text=(wrap?.textContent||'').toLowerCase();
+    if(text.includes('capacitor'))return '../assets/product-capacitor.svg';
+    if(text.includes('contactor')||text.includes('overload')||text.includes('terminal')||text.includes('push button'))return '../assets/product-contactor.svg';
+    if(text.includes('mcb')||text.includes('mccb')||text.includes('breaker')||text.includes('rccb')||text.includes('rcbo')||text.includes('surge'))return '../assets/product-breaker.svg';
+    if(text.includes('wire')||text.includes('cable'))return '../assets/product-wire.svg';
+    if(text.includes('motor')||text.includes('pump'))return '../assets/product-motor.svg';
+    if(text.includes('bearing')||text.includes('seal'))return '../assets/product-bearing.svg';
+    if(text.includes('led')||text.includes('light'))return '../assets/product-light.svg';
+    return '../assets/product-automation.svg';
+  }
+
+  function repairImage(img){
+    if(!(img instanceof HTMLImageElement)||img.dataset.ykAdminFallback==='1')return;
+    img.dataset.ykAdminFallback='1';
+    img.src=fallbackFor(img);
+  }
+
+  document.addEventListener('error',e=>{
+    const img=e.target;
+    if(!(img instanceof HTMLImageElement))return;
+    if(!img.closest('.admin-app'))return;
+    repairImage(img);
+  },true);
+
+  function repairAlreadyBroken(){
+    document.querySelectorAll('.admin-app img').forEach(img=>{
+      if(img.complete&&img.naturalWidth===0)repairImage(img);
+    });
+  }
+
+  function desiredTrending(){
+    const state=readState();
+    if(!state?.products)return [];
+    const selected=state.products.filter(p=>p.featured);
+    const rank=new Map(PREFERRED_TRENDING.map((id,i)=>[Number(id),i]));
+    return selected.sort((a,b)=>(rank.get(Number(a.id))??99)-(rank.get(Number(b.id))??99));
+  }
+
+  function reorderDashboardTrending(){
+    const holder=$('#dashboardTrending');
+    if(!holder)return;
+    const desired=desiredTrending();
+    if(!desired.length)return;
+    const cards=[...holder.querySelectorAll('.mini-product')];
+    if(!cards.length)return;
+    const byName=new Map(cards.map(card=>[card.querySelector('b')?.textContent.trim(),card]));
+    const ordered=desired.map(p=>byName.get(p.name)).filter(Boolean);
+    const current=cards.map(card=>card.querySelector('b')?.textContent.trim()).join('|');
+    const target=ordered.map(card=>card.querySelector('b')?.textContent.trim()).join('|');
+    if(ordered.length===cards.length&&current!==target)ordered.forEach(card=>holder.appendChild(card));
+  }
+
+  function injectMoreMenu(){
+    const actions=$('.topbar-actions');
+    if(!actions||$('#adminMoreBtn'))return;
+    actions.style.position='relative';
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.id='adminMoreBtn';
+    btn.className='ghost-btn admin-more-btn';
+    btn.setAttribute('aria-label','More admin actions');
+    btn.textContent='•••';
+    const menu=document.createElement('div');
+    menu.id='adminMoreMenu';
+    menu.className='admin-more-menu';
+    menu.hidden=true;
+    menu.innerHTML='<button type="button" data-admin-more="load">↻ Load Live</button><button type="button" data-admin-more="export">⇩ Export Data</button>';
+    actions.insertBefore(btn,actions.querySelector('#globalAddProduct')||null);
+    actions.appendChild(menu);
+    btn.onclick=e=>{e.stopPropagation();menu.hidden=!menu.hidden};
+    menu.querySelector('[data-admin-more="load"]').onclick=()=>{$('#loadLiveBtn')?.click();menu.hidden=true};
+    menu.querySelector('[data-admin-more="export"]').onclick=()=>{$('#exportBtn')?.click();menu.hidden=true};
+    document.addEventListener('click',e=>{if(!menu.contains(e.target)&&e.target!==btn)menu.hidden=true});
+  }
+
+  function polish(){
+    injectMoreMenu();
+    reorderDashboardTrending();
+    repairAlreadyBroken();
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    polish();
+    const holder=$('#dashboardTrending');
+    if(holder){
+      let scheduled=false;
+      new MutationObserver(()=>{
+        if(scheduled)return;
+        scheduled=true;
+        requestAnimationFrame(()=>{scheduled=false;reorderDashboardTrending();repairAlreadyBroken()});
+      }).observe(holder,{childList:true});
+    }
+  });
+  document.addEventListener('yk-admin-authenticated',polish);
+})();
