@@ -1,0 +1,1 @@
+(()=>{const wire=()=>{if(window.YKPurchaseOrders&&!window.YKPurchaseOrders.open)window.YKPurchaseOrders.open=(id,supplierId)=>window.YKPOEditor?.open?.(id,supplierId)};wire();document.addEventListener('DOMContentLoaded',wire);setTimeout(wire,500);})();
