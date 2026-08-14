@@ -145,7 +145,7 @@ function openDetail(id){
   document.getElementById("productDetail").setAttribute("aria-hidden","false");
   document.getElementById("productDetail").removeAttribute("inert");
   document.body.classList.add("body-detail-open");
-  setTimeout(()=>document.getElementById("detailClose")?.focus(),0);
+  setTimeout(()=>document.getElementById("detailClose")?.focus({preventScroll:true}),280);
  });
 }
 
