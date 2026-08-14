@@ -47,7 +47,12 @@
 
   function applyStore(data){
     if(typeof products!=='undefined'&&Array.isArray(data.products))products.splice(0,products.length,...data.products.map(p=>({...p})));
-    if(typeof brands!=='undefined'&&Array.isArray(data.brands))brands.splice(0,brands.length,...data.brands);
+    if(typeof brands!=='undefined'&&Array.isArray(data.brands)){
+      const preferred=window.YKCatalogPresentation?.brands;
+      const available=new Set((Array.isArray(data.products)?data.products:[]).map(p=>p.brand));
+      const storefrontBrands=Array.isArray(preferred)?preferred.filter(name=>available.has(name)):data.brands;
+      brands.splice(0,brands.length,...storefrontBrands);
+    }
     if(typeof categories!=='undefined'&&Array.isArray(data.categories))categories.splice(0,categories.length,...data.categories.map(c=>({...c})));
 
     const trendingIds=Array.isArray(data.trending)?data.trending.map(Number):[];

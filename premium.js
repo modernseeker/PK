@@ -5,7 +5,10 @@
   function searchCatalog(query){
     try{
       selected='All';
+      selectedBrand='All Brands';
       resetProductLimit();
+      renderBrandStrip();
+      renderBrandFilter();
       renderFilters();
     }catch(error){}
     const catalog=document.getElementById('catalogSearch');

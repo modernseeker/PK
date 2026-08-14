@@ -48,7 +48,7 @@ const products=[
 {id:23,brand:"Lighting",name:"LED Flood Light",model:"Outdoor Series",spec:"Outdoor / industrial",cat:"Lighting & Electronics",code:"YK-LGT-001",desc:"LED flood light for outdoor, factory and industrial lighting.",img:"assets/product-light.svg",badge:"Lighting",featured:false,tags:"led flood light outdoor"},
 {id:24,brand:"Lighting",name:"LED Driver / Power Supply",model:"Replacement Unit",spec:"LED support accessory",cat:"Lighting & Electronics",code:"YK-ELC-001",desc:"Replacement driver and power module for LED products.",img:"assets/product-light.svg",badge:"Electronic",featured:false,tags:"led driver electronic power supply"}
 ];
-let selected="All",selectedBrand="All Brands",query="",cart=JSON.parse(localStorage.getItem("yk_request_cart")||"[]");
+let selected="All",selectedBrand="All Brands",query="",cart=(()=>{try{const saved=JSON.parse(localStorage.getItem("yk_request_cart")||"[]");return Array.isArray(saved)?saved:[]}catch(error){return[]}})();
 const initialProductLimit=window.matchMedia("(max-width:760px)").matches?8:12;
 let visibleProductLimit=initialProductLimit;
 const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
