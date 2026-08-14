@@ -51,15 +51,23 @@ document.addEventListener("error",e=>{
   const img=e.target;
   if(!(img instanceof HTMLImageElement)) return;
   const match=normalized[img.src];
-  if(!match) return;
-  const {item}=match;
-  if(item.backupUrl&&!img.dataset.realBackupDone){
-    img.dataset.realBackupDone="1";
-    img.src=item.backupUrl;
-    return;
+  if(match){
+    const {item}=match;
+    if(item.backupUrl&&!img.dataset.realBackupDone){
+      img.dataset.realBackupDone="1";
+      img.src=item.backupUrl;
+      return;
+    }
+    if(img.dataset.realFallbackDone) return;
+    img.dataset.realFallbackDone="1";
+    img.src=item.fallback;
+  }else{
+    const fallback=img.dataset.fallback;
+    if(!fallback||img.dataset.genericFallbackDone) return;
+    img.dataset.genericFallbackDone="1";
+    img.src=fallback;
   }
-  if(img.dataset.realFallbackDone) return;
-  img.dataset.realFallbackDone="1";
-  img.src=item.fallback;
+  const visual=img.closest('.product-image,.detail-visual,.related-item');
+  if(visual){visual.classList.remove('image-real');visual.classList.add('image-placeholder')}
 },true);
 })();

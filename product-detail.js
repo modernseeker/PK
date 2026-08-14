@@ -55,11 +55,13 @@ function openDetail(id){
  const groups=variantsFor(p);
  groups.forEach(g=>selections[g.name]=g.options[0]);
  const related=relatedFor(p);
+ const actualImage=typeof hasActualProductImage==="function"?hasActualProductImage(p):true;
+ const fallback=typeof fallbackImage==="function"?fallbackImage(p):"assets/product-breaker.svg";
  const shell=document.getElementById("detailShell");
  shell.innerHTML=`
   <div class="detail-top"><span class="detail-breadcrumb">${p.cat} / ${p.brand}</span><button class="detail-close" id="detailClose" aria-label="Close product details">×</button></div>
   <div class="detail-grid">
-   <div class="detail-visual"><span class="detail-badge">${p.badge}</span><img src="${p.img}" alt="${p.name}"></div>
+   <div class="detail-visual ${actualImage?'image-real':'image-placeholder'}"><span class="detail-badge">${p.badge}</span><img src="${p.img||fallback}" data-fallback="${fallback}" alt="${p.name}"><span class="detail-image-note">Reference illustration — appearance varies by model.</span></div>
    <div class="detail-info">
     <span class="detail-brand">${p.brand}</span>
     <h2 id="detailTitle">${p.name}</h2>
@@ -73,7 +75,7 @@ function openDetail(id){
     <p class="detail-note">Price is confirmed after the exact model/specification and availability are checked.</p>
    </div>
   </div>
-  ${related.length?`<div class="detail-related"><div class="detail-related-head"><h3>Related products</h3><span>More in ${p.cat}</span></div><div class="related-grid">${related.map(r=>`<button type="button" class="related-item" data-related-id="${r.id}"><img src="${r.img}" alt=""><div><small>${r.brand}</small><strong>${r.name}</strong></div></button>`).join('')}</div></div>`:''}
+  ${related.length?`<div class="detail-related"><div class="detail-related-head"><h3>Related products</h3><span>More in ${p.cat}</span></div><div class="related-grid">${related.map(r=>`<button type="button" class="related-item ${typeof hasActualProductImage==="function"&&hasActualProductImage(r)?'image-real':'image-placeholder'}" data-related-id="${r.id}"><img src="${r.img}" data-fallback="${typeof fallbackImage==="function"?fallbackImage(r):'assets/product-breaker.svg'}" alt=""><div><small>${r.brand}</small><strong>${r.name}</strong></div></button>`).join('')}</div></div>`:''}
  `;
  document.getElementById("detailClose").onclick=closeDetail;
  shell.querySelectorAll(".variant-option").forEach(btn=>btn.onclick=()=>selectVariant(btn));

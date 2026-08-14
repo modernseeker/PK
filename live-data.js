@@ -10,9 +10,10 @@
     return body;
   }
 
-  function mapProduct(p,trendingIds){return {
+  const categoryFallbacks={'Wires & Cables':'assets/product-wire.svg','Protection':'assets/product-breaker.svg','Control & Panel':'assets/product-contactor.svg','Automation':'assets/product-automation.svg','Capacitors':'assets/product-capacitor.svg','Motors & Pumps':'assets/product-motor.svg','Bearings & Spares':'assets/product-bearing.svg','Lighting & Electronics':'assets/product-light.svg'};
+  function mapProduct(p,trendingIds){const fallback=categoryFallbacks[p.category]||'assets/product-breaker.svg';return {
     id:Number(p.id),brand:p.brand||'',name:p.name||'',model:p.model||'',spec:p.specification||'',cat:p.category||'',
-    code:p.code||'',desc:p.description||'',img:p.image_url||'assets/product-breaker.svg',badge:p.badge||'',
+    code:p.code||'',desc:p.description||'',img:p.image_url||fallback,fallbackImg:fallback,realProductImage:!!p.image_url,badge:p.badge||'',
     featured:trendingIds.includes(Number(p.id)),price:p.price_text||'Price on request',stock:p.stock_status||'Check Stock',tags:p.tags||''
   };}
 
@@ -53,6 +54,7 @@
     if(typeof products!=='undefined')products.forEach(p=>p.featured=trendingIds.includes(Number(p.id)));
 
     try{if(typeof renderBrandStrip==='function')renderBrandStrip()}catch(e){}
+    try{if(typeof renderBrandFilter==='function')renderBrandFilter()}catch(e){}
     try{if(typeof renderCats==='function')renderCats()}catch(e){}
     try{
       const w=document.getElementById('featuredGrid');
