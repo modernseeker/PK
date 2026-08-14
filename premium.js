@@ -1,50 +1,13 @@
 (()=>{
   const topInput=document.getElementById('topSearch');
   const topButton=document.getElementById('topSearchButton');
-  const heroInput=document.getElementById('heroSearch');
-  const heroButton=document.getElementById('heroSearchBtn');
-  const heroCategory=document.getElementById('heroCategory');
-
-  async function readHeroParts(files){
-    const parts=await Promise.all(files.map(async file=>{
-      const response=await fetch(file,{cache:'no-store'});
-      if(!response.ok)throw new Error(`Hero asset failed: ${response.status}`);
-      return (await response.text()).replace(/\s+/g,'');
-    }));
-    return parts.join('');
-  }
-
-  async function loadHeroBanner(){
-    const hero=document.querySelector('.hero');
-    if(!hero)return;
-    try{
-      const hqFiles=[1,2,3,4,5,6,7,8].map(i=>`assets/hero-hq-${i}.txt?v=1`);
-      let data;
-      try{
-        data=await readHeroParts(hqFiles);
-      }catch(hqError){
-        console.warn('HQ hero unavailable; using standard hero.',hqError);
-        const fallbackFiles=[1,2,3,4,5].map(i=>`assets/hero-chunk-${i}.txt?v=2`);
-        data=await readHeroParts(fallbackFiles);
-      }
-      let image=hero.querySelector('.hero-banner-img');
-      if(!image){
-        image=document.createElement('img');
-        image.className='hero-banner-img';
-        image.alt='Trusted Products. Powering Nepal. Complete electrical solution from YK Electric.';
-        image.decoding='async';
-        image.fetchPriority='high';
-        hero.prepend(image);
-      }
-      image.src=`data:image/webp;base64,${data}`;
-      hero.style.backgroundImage='none';
-      hero.dataset.heroLoaded='hq';
-    }catch(error){
-      console.error('YK hero banner failed to load',error);
-    }
-  }
 
   function searchCatalog(query){
+    try{
+      selected='All';
+      resetProductLimit();
+      renderFilters();
+    }catch(error){}
     const catalog=document.getElementById('catalogSearch');
     if(catalog){
       catalog.value=query;
@@ -57,16 +20,8 @@
     searchCatalog((topInput?.value||'').trim());
   }
 
-  function runHeroSearch(){
-    const query=(heroInput?.value||'').trim();
-    const category=(heroCategory?.value||'').trim();
-    searchCatalog([query,category].filter(Boolean).join(' '));
-  }
-
   topButton?.addEventListener('click',runTopSearch);
   topInput?.addEventListener('keydown',e=>{if(e.key==='Enter')runTopSearch()});
-  heroButton?.addEventListener('click',runHeroSearch);
-  heroInput?.addEventListener('keydown',e=>{if(e.key==='Enter')runHeroSearch()});
   document.getElementById('allCategoriesButton')?.addEventListener('click',()=>document.getElementById('categoryRail')?.scrollIntoView({behavior:'smooth'}));
 
   const fallbackMap={
@@ -125,7 +80,6 @@
     if(wa&&wa.textContent.trim()!=='Get Price on WhatsApp')wa.textContent='Get Price on WhatsApp';
   }
 
-  loadHeroBanner();
   renderReferenceTrendingOnce();
   enhanceCards();
   enhanceDetail();

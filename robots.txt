@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://modernseeker.github.io/PK/sitemap.xml

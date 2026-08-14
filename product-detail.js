@@ -20,6 +20,7 @@ const variantMap={
 
 let currentProduct=null;
 let selections={};
+let detailTrigger=null;
 
 function genericVariants(p){
  if(p.cat==="Wires & Cables") return [{name:"Requirement",options:["Send size / gauge"]}];
@@ -38,6 +39,7 @@ function ensureModal(){
  overlay.id="detailOverlay"; overlay.className="detail-overlay";
  const modal=document.createElement("section");
  modal.id="productDetail"; modal.className="product-detail"; modal.setAttribute("aria-hidden","true");
+ modal.setAttribute("role","dialog"); modal.setAttribute("aria-modal","true"); modal.setAttribute("aria-labelledby","detailTitle");
  modal.innerHTML='<div class="detail-shell" id="detailShell"></div>';
  document.body.append(overlay,modal);
  overlay.addEventListener("click",closeDetail);
@@ -48,6 +50,7 @@ function relatedFor(p){return products.filter(x=>x.cat===p.cat&&x.id!==p.id).sli
 function openDetail(id){
  const p=products.find(x=>x.id===Number(id));
  if(!p) return;
+ detailTrigger=document.activeElement;
  ensureModal(); currentProduct=p; selections={};
  const groups=variantsFor(p);
  groups.forEach(g=>selections[g.name]=g.options[0]);
@@ -59,7 +62,7 @@ function openDetail(id){
    <div class="detail-visual"><span class="detail-badge">${p.badge}</span><img src="${p.img}" alt="${p.name}"></div>
    <div class="detail-info">
     <span class="detail-brand">${p.brand}</span>
-    <h2>${p.name}</h2>
+    <h2 id="detailTitle">${p.name}</h2>
     <div class="detail-model">${p.model}</div>
     <span class="detail-code">${p.code}</span>
     <p class="detail-description">${p.desc} Select the required specification below, then send it to YK Electric for current price and availability.</p>
@@ -70,7 +73,7 @@ function openDetail(id){
     <p class="detail-note">Price is confirmed after the exact model/specification and availability are checked.</p>
    </div>
   </div>
-  ${related.length?`<div class="detail-related"><div class="detail-related-head"><h3>Related products</h3><span>More in ${p.cat}</span></div><div class="related-grid">${related.map(r=>`<article class="related-item" data-related-id="${r.id}"><img src="${r.img}" alt="${r.name}"><div><small>${r.brand}</small><strong>${r.name}</strong></div></article>`).join('')}</div></div>`:''}
+  ${related.length?`<div class="detail-related"><div class="detail-related-head"><h3>Related products</h3><span>More in ${p.cat}</span></div><div class="related-grid">${related.map(r=>`<button type="button" class="related-item" data-related-id="${r.id}"><img src="${r.img}" alt=""><div><small>${r.brand}</small><strong>${r.name}</strong></div></button>`).join('')}</div></div>`:''}
  `;
  document.getElementById("detailClose").onclick=closeDetail;
  shell.querySelectorAll(".variant-option").forEach(btn=>btn.onclick=()=>selectVariant(btn));
@@ -84,6 +87,7 @@ function openDetail(id){
   document.getElementById("productDetail").classList.add("open");
   document.getElementById("productDetail").setAttribute("aria-hidden","false");
   document.body.classList.add("body-detail-open");
+  document.getElementById("detailClose").focus();
  });
 }
 
@@ -92,6 +96,7 @@ function closeDetail(){
  if(overlay) overlay.classList.remove("show");
  if(modal){modal.classList.remove("open");modal.setAttribute("aria-hidden","true")}
  document.body.classList.remove("body-detail-open");
+ if(detailTrigger&&typeof detailTrigger.focus==="function")detailTrigger.focus();
 }
 
 function selectVariant(btn){
@@ -147,6 +152,8 @@ if(orderButton) orderButton.onclick=()=>{
 enhancedRenderCart();
 
 document.addEventListener("click",e=>{
+ const direct=e.target.closest("[data-open]");
+ if(direct){openDetail(direct.dataset.open);return}
  const card=e.target.closest(".product-card");
  if(!card) return;
  if(e.target.closest("button,input,a,.qty,.product-actions")) return;
