@@ -92,7 +92,7 @@ function openDetail(id){
  const specificationRowsForProduct=specificationRows(p,groups);
  const shell=document.getElementById("detailShell");
  shell.innerHTML=`
-  <div class="detail-top"><nav class="detail-breadcrumb" aria-label="Product breadcrumb"><span>Home</span><i>›</i><span>${esc(p.cat)}</span><i>›</i><span>${esc(p.brand)}</span><i>›</i><b>${esc(p.model||p.name)}</b></nav><button class="detail-close" id="detailClose" aria-label="Close product details">×</button></div>
+  <div class="detail-top"><nav class="detail-breadcrumb" aria-label="Product breadcrumb"><span>Home</span><i>›</i><span>${esc(p.cat)}</span><i>›</i><span>${esc(p.brand)}</span><i>›</i><b>${esc(p.model||p.name)}</b></nav><button class="detail-close" id="detailClose" type="button" aria-label="Close product details">×</button></div>
   <div class="detail-grid">
    <div class="detail-media ${actualImage?'image-real':'image-placeholder'}">
     <div class="detail-thumbs" aria-label="Product images"><button class="detail-thumb active" type="button" aria-label="Primary product image"><img src="${esc(image)}" data-fallback="${esc(fallback)}" alt=""></button><span>${actualImage?'Product view':'Reference view'}</span></div>
@@ -105,9 +105,9 @@ function openDetail(id){
     <span class="detail-code">${esc(p.code)}</span>
     <p class="detail-description">${esc(p.desc)} Select the required specification below, then send it to YK Electric for current price and availability.</p>
     <div class="detail-status"><span>● Check availability</span><span>${esc(p.spec)}</span></div>
-    ${groups.map(g=>`<div class="variant-group" data-group="${esc(g.name)}"><label>${esc(g.name)}</label><div class="variant-options">${g.options.map((o,i)=>`<button class="variant-option ${i===0?'active':''}" data-group-name="${esc(g.name)}" data-value="${esc(o)}">${esc(o)}</button>`).join('')}</div></div>`).join('')}
-    <div class="detail-buy"><div class="detail-qty"><button id="detailMinus">−</button><input id="detailQty" value="1" inputmode="numeric"><button id="detailPlus">+</button></div><div class="detail-spec-preview" id="detailSpecPreview">${esc(detailVariantText())}</div></div>
-    <div class="detail-actions"><button class="detail-action cart" id="detailAdd">Add to request cart</button><button class="detail-action whatsapp" id="detailWhatsApp">Ask price on WhatsApp</button></div>
+    ${groups.map(g=>`<div class="variant-group" data-group="${esc(g.name)}"><label>${esc(g.name)}</label><div class="variant-options">${g.options.map((o,i)=>`<button class="variant-option ${i===0?'active':''}" type="button" aria-pressed="${i===0?'true':'false'}" data-group-name="${esc(g.name)}" data-value="${esc(o)}">${esc(o)}</button>`).join('')}</div></div>`).join('')}
+    <div class="detail-buy"><div class="detail-qty"><button id="detailMinus" type="button" aria-label="Decrease quantity">−</button><input id="detailQty" type="number" value="1" min="1" max="999" inputmode="numeric" aria-label="Quantity"><button id="detailPlus" type="button" aria-label="Increase quantity">+</button></div><div class="detail-spec-preview" id="detailSpecPreview" aria-live="polite">${esc(detailVariantText())}</div></div>
+    <div class="detail-actions"><button class="detail-action cart" id="detailAdd" type="button">Add to request cart</button><button class="detail-action whatsapp" id="detailWhatsApp" type="button">Ask price on WhatsApp</button></div>
     <p class="detail-note">Price is confirmed after the exact model/specification and availability are checked.</p>
    </div>
   </div>
@@ -151,27 +151,29 @@ function openDetail(id){
 
 function closeDetail(){
  const overlay=document.getElementById("detailOverlay"),modal=document.getElementById("productDetail");
+ if(!modal||modal.getAttribute("aria-hidden")==="true") return;
  if(overlay) overlay.classList.remove("show");
- if(modal){modal.classList.remove("open");modal.setAttribute("aria-hidden","true");modal.setAttribute("inert","")}
+ modal.classList.remove("open");modal.setAttribute("aria-hidden","true");modal.setAttribute("inert","");
  document.body.classList.remove("body-detail-open");
- if(detailTrigger&&typeof detailTrigger.focus==="function")detailTrigger.focus();
+ const restore=detailTrigger;detailTrigger=null;
+ setTimeout(()=>restore?.focus(),0);
 }
 
 function selectVariant(btn){
  const name=btn.dataset.groupName,value=btn.dataset.value;
  selections[name]=value;
- btn.closest(".variant-options").querySelectorAll(".variant-option").forEach(x=>x.classList.toggle("active",x===btn));
+ btn.closest(".variant-options").querySelectorAll(".variant-option").forEach(x=>{const active=x===btn;x.classList.toggle("active",active);x.setAttribute("aria-pressed",String(active))});
  const preview=document.getElementById("detailSpecPreview"); if(preview) preview.textContent=detailVariantText();
 }
 
 function changeQty(delta){
  const input=document.getElementById("detailQty");
- input.value=Math.max(1,(Number(input.value)||1)+delta);
+ input.value=Math.min(999,Math.max(1,(Number(input.value)||1)+delta));
 }
 
 function addDetailToCart(){
  if(!currentProduct) return;
- const qty=Math.max(1,Number(document.getElementById("detailQty").value)||1);
+ const qty=Math.min(999,Math.max(1,Number(document.getElementById("detailQty").value)||1));
  const variant=detailVariantText();
  const existing=cart.find(x=>x.id===currentProduct.id&&(x.variant||"")===variant);
  if(existing) existing.qty+=qty; else cart.push({id:currentProduct.id,qty,variant});
@@ -182,30 +184,32 @@ function addDetailToCart(){
 
 function sendDetailWhatsApp(){
  if(!currentProduct) return;
- const qty=Math.max(1,Number(document.getElementById("detailQty").value)||1);
+ const qty=Math.min(999,Math.max(1,Number(document.getElementById("detailQty").value)||1));
  const text=["Hello YK Electric & Electronic,","",`I want price and availability for:`,`Product: ${currentProduct.brand} ${currentProduct.name}`,`Model: ${currentProduct.model}`,`Specification: ${detailVariantText()}`,`Quantity: ${qty}`,`Code: ${currentProduct.code}`,"","Please confirm the exact model, price and availability."].join("\n");
- window.open(`https://wa.me/${WA}?text=${encodeURIComponent(text)}`,"_blank");
+ const popup=window.open(`https://wa.me/${WA}?text=${encodeURIComponent(text)}`,"_blank","noopener,noreferrer");
+ if(popup)popup.opener=null;
 }
 
 function enhancedRenderCart(){
  save();
  const wrap=document.getElementById("cartItems"); if(!wrap) return;
  if(!cart.length){wrap.innerHTML='<div class="cart-empty"><b>Your request cart is empty.</b><p>Add products from the catalog.</p></div>';return}
- wrap.innerHTML=cart.map((x,index)=>{const p=products.find(v=>v.id===x.id);if(!p)return'';return `<div class="cart-item"><h4>${esc(p.name)}</h4><span>${esc(p.brand)} · ${esc(p.code)}${x.variant?`<br>${esc(x.variant)}`:''}</span><div class="cart-controls"><button data-ecminus="${index}">−</button><b>${Math.max(1,Number(x.qty)||1)}</b><button data-ecplus="${index}">+</button><button class="remove" data-eremove="${index}">Remove</button></div></div>`}).join('');
+ wrap.innerHTML=cart.map((x,index)=>{const p=products.find(v=>Number(v.id)===Number(x.id));if(!p)return'';return `<div class="cart-item"><h4>${esc(p.name)}</h4><span>${esc(p.brand)} · ${esc(p.code)}${x.variant?`<br>${esc(x.variant)}`:''}</span><div class="cart-controls"><button type="button" data-ecminus="${index}" aria-label="Decrease ${esc(p.name)} quantity">−</button><b>${Math.max(1,Number(x.qty)||1)}</b><button type="button" data-ecplus="${index}" aria-label="Increase ${esc(p.name)} quantity">+</button><button type="button" class="remove" data-eremove="${index}" aria-label="Remove ${esc(p.name)}">Remove</button></div></div>`}).join('');
  wrap.querySelectorAll('[data-ecminus]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.ecminus);cart[i].qty=Math.max(1,cart[i].qty-1);enhancedRenderCart()});
  wrap.querySelectorAll('[data-ecplus]').forEach(b=>b.onclick=()=>{cart[Number(b.dataset.ecplus)].qty++;enhancedRenderCart()});
  wrap.querySelectorAll('[data-eremove]').forEach(b=>b.onclick=()=>{cart.splice(Number(b.dataset.eremove),1);enhancedRenderCart()});
 }
 
 function enhancedOrderText(){
- return ["Hello YK Electric & Electronic,","","Please confirm availability and final price for:",...cart.map((x,i)=>{const p=products.find(v=>v.id===x.id);return `${i+1}. ${p.brand} ${p.name} (${p.code}) — Qty ${x.qty}${x.variant?` — ${x.variant}`:''}`}),"","Please confirm exact model, stock, price and delivery."].join("\n");
+ return ["Hello YK Electric & Electronic,","","Please confirm availability and final price for:",...cart.map((x,i)=>{const p=products.find(v=>Number(v.id)===Number(x.id));return `${i+1}. ${p.brand} ${p.name} (${p.code}) — Qty ${x.qty}${x.variant?` — ${x.variant}`:''}`}),"","Please confirm exact model, stock, price and delivery."].join("\n");
 }
 
 try{renderCart=enhancedRenderCart;orderText=enhancedOrderText}catch(e){}
 const orderButton=document.getElementById("copyOrder");
 if(orderButton) orderButton.onclick=()=>{
  if(!cart.length){const s=document.getElementById("copyStatus");if(s)s.textContent="Add at least one product first.";return}
- window.open(`https://wa.me/${WA}?text=${encodeURIComponent(enhancedOrderText())}`,"_blank");
+ const popup=window.open(`https://wa.me/${WA}?text=${encodeURIComponent(enhancedOrderText())}`,"_blank","noopener,noreferrer");
+ if(popup)popup.opener=null;
 };
 enhancedRenderCart();
 
@@ -219,5 +223,5 @@ document.addEventListener("click",e=>{
  if(add) openDetail(add.dataset.add);
 });
 
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDetail()});
+document.addEventListener("keydown",e=>{const modal=document.getElementById("productDetail");if(!modal||modal.getAttribute("aria-hidden")==="true")return;if(e.key==="Escape")closeDetail();else if(e.key==="Tab")window.YKTrapFocus?.(modal,e)});
 })();

@@ -70,6 +70,10 @@
     }catch(e){}
     try{if(typeof renderFilters==='function')renderFilters()}catch(e){}
     try{if(typeof renderProducts==='function')renderProducts()}catch(e){}
+    try{
+      if(typeof cart!=='undefined'&&Array.isArray(cart))cart=cart.filter(item=>products.some(product=>Number(product.id)===Number(item.id)));
+      if(typeof renderCart==='function')renderCart();
+    }catch(e){}
 
     const s=data.settings||{};
     const phone=String(s.phone||'').replace(/\s+/g,'');
@@ -77,18 +81,18 @@
     const email=String(s.email||'').trim();
     const location=String(s.location||'').trim();
     const businessName=String(s.businessName||'YK Electric & Electronic').trim();
-    document.querySelectorAll('#phoneText').forEach(el=>el.textContent=phone||el.textContent);
-    document.querySelectorAll('#emailText').forEach(el=>el.textContent=email||el.textContent);
-    document.querySelectorAll('a[href^="tel:"]').forEach(a=>{if(phone)a.href=`tel:+977${phone.replace(/^977/,'')}`});
-    document.querySelectorAll('a[href^="mailto:"]').forEach(a=>{if(email)a.href=`mailto:${email}`});
-    document.querySelectorAll('a[href*="wa.me/"]').forEach(a=>{if(whatsapp)a.href=`https://wa.me/${whatsapp.startsWith('977')?whatsapp:'977'+whatsapp}`});
     const contactP=document.querySelector('.contact-card p');
     if(contactP&&location){
       const phoneText=document.createElement('span'),emailText=document.createElement('span');
-      phoneText.id='phoneText';phoneText.textContent=phone;
-      emailText.id='emailText';emailText.textContent=email;
+      phoneText.id='phoneText';
+      emailText.id='emailText';
       contactP.replaceChildren(document.createTextNode(`Talk directly with ${businessName} — ${location} · `),phoneText,document.createTextNode(' · '),emailText);
     }
+    document.querySelectorAll('#phoneText').forEach(el=>{const display=phone||el.textContent;const link=document.createElement('a');link.href=`tel:+977${display.replace(/\D/g,'').replace(/^977/,'')}`;link.textContent=display;el.replaceChildren(link)});
+    document.querySelectorAll('#emailText').forEach(el=>{const display=email||el.textContent;const link=document.createElement('a');link.href=`mailto:${display}`;link.textContent=display;el.replaceChildren(link)});
+    document.querySelectorAll('a[href^="tel:"]').forEach(a=>{if(phone)a.href=`tel:+977${phone.replace(/\D/g,'').replace(/^977/,'')}`});
+    document.querySelectorAll('a[href^="mailto:"]').forEach(a=>{if(email)a.href=`mailto:${email}`});
+    document.querySelectorAll('a[href*="wa.me/"]').forEach(a=>{if(whatsapp)a.href=`https://wa.me/${whatsapp.startsWith('977')?whatsapp:'977'+whatsapp}`});
 
     document.documentElement.dataset.liveStore=data.source||'loaded';
     window.dispatchEvent(new CustomEvent('yk:store-loaded',{detail:data}));

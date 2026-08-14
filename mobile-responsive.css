@@ -504,6 +504,14 @@
 }
 
 @media (max-width: 430px) {
+  .empty-actions {
+    flex-direction: column;
+  }
+
+  .empty-actions .btn {
+    width: 100%;
+  }
+
   .hero-copy > p {
     font-size: 11px;
   }

@@ -32,7 +32,8 @@ if (orderButton) {
       "",
       "Please confirm exact model, stock, price and delivery."
     ].join("\n");
-    window.open(`https://wa.me/${YK_CONTACT.whatsapp}?text=${encodeURIComponent(text)}`, "_blank");
+    const popup = window.open(`https://wa.me/${YK_CONTACT.whatsapp}?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+    if (popup) popup.opener = null;
   };
 }
 
@@ -51,7 +52,8 @@ if (requestForm) {
       "",
       "Please confirm availability and final price."
     ].join("\n");
-    window.open(`https://wa.me/${YK_CONTACT.whatsapp}?text=${encodeURIComponent(text)}`, "_blank");
+    const popup = window.open(`https://wa.me/${YK_CONTACT.whatsapp}?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+    if (popup) popup.opener = null;
     const status = document.getElementById("formStatus");
     if (status) status.textContent = "Opening WhatsApp with your prepared request…";
   };

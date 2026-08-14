@@ -4,6 +4,7 @@
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const digits=v=>String(v||'').replace(/[^0-9+]/g,'');
   const modal=document.createElement('div');
+  let enquiryTrigger=null;
   modal.className='enquiry-modal';modal.id='enquiryModal';modal.hidden=true;
   modal.innerHTML='<div class="enquiry-card" role="dialog" aria-modal="true" aria-labelledby="enquiryTitle"><div class="enquiry-head"><div><small>REQUEST QUOTATION</small><h2 id="enquiryTitle">Send your product enquiry</h2></div><button type="button" id="closeEnquiry" aria-label="Close">×</button></div><div id="enquiryBody"></div></div>';
   document.body.appendChild(modal);
@@ -30,16 +31,24 @@
   }
   function open(){
     if(!items().length){try{openCart?.()}catch(e){}return}
-    try{closeCart?.()}catch(e){}
+    enquiryTrigger=document.activeElement;
+    try{closeCart?.(false)}catch(e){}
     $('#enquiryBody').innerHTML=formMarkup();modal.hidden=false;document.documentElement.classList.add('enquiry-open');
     $('#enquiryForm').addEventListener('submit',submit);$('#enquiryWhatsApp').onclick=whatsApp;setTimeout(()=>$('#enquiryForm input[name="customer_name"]')?.focus(),30);
   }
-  function close(){modal.hidden=true;document.documentElement.classList.remove('enquiry-open')}
+  function close(){
+    if(modal.hidden)return;
+    modal.hidden=true;document.documentElement.classList.remove('enquiry-open');
+    const trigger=enquiryTrigger;enquiryTrigger=null;
+    const fallback=window.matchMedia('(max-width: 760px)').matches?$('#mobileCartBtn'):$('#cartBtn');
+    const restore=trigger&&!trigger.closest?.('[aria-hidden="true"], [inert]')?trigger:fallback;
+    setTimeout(()=>restore?.focus(),0);
+  }
   function whatsApp(){
     const form=$('#enquiryForm'),fd=form?new FormData(form):null;
     const extra=fd?[`Name: ${fd.get('customer_name')||''}`,`Phone: ${fd.get('phone')||''}`,`Location: ${fd.get('location')||''}`,`Notes: ${fd.get('notes')||''}`].filter(x=>!x.endsWith(': ')).join('\n'):'';
     const text=`${typeof orderText==='function'?orderText():'YK Electric product enquiry'}${extra?'\n\n'+extra:''}`;
-    const wa=document.querySelector('a[href*="wa.me/"]')?.href?.split('?')[0]||'https://wa.me/9779747359443';window.open(`${wa}?text=${encodeURIComponent(text)}`,'_blank','noopener');
+    const wa=document.querySelector('a[href*="wa.me/"]')?.href?.split('?')[0]||'https://wa.me/9779747359443';const popup=window.open(`${wa}?text=${encodeURIComponent(text)}`,'_blank','noopener,noreferrer');if(popup)popup.opener=null;
   }
   async function submit(e){
     e.preventDefault();const form=e.currentTarget,fd=new FormData(form),error=$('#enquiryError'),btn=$('#submitEnquiry');if(fd.get('website'))return;
@@ -59,6 +68,6 @@
       $('#doneEnquiry').onclick=close;
     }catch(err){error.textContent=err.message||'Could not send the enquiry. Please try WhatsApp instead.';btn.disabled=false;btn.textContent='Submit enquiry'}
   }
-  $('#closeEnquiry').onclick=close;modal.addEventListener('click',e=>{if(e.target===modal)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)close()});
+  $('#closeEnquiry').onclick=close;modal.addEventListener('click',e=>{if(e.target===modal)close()});document.addEventListener('keydown',e=>{if(modal.hidden)return;if(e.key==='Escape')close();else if(e.key==='Tab')window.YKTrapFocus?.(modal,e)});
   const cartButton=$('#copyOrder');if(cartButton){cartButton.textContent='Submit enquiry';cartButton.onclick=open}window.YKEnquiries={open};
 })();
