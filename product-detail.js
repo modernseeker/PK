@@ -29,11 +29,38 @@ function genericVariants(p){
  if(p.cat==="Motors & Pumps") return [{name:"Requirement",options:["Send HP / size"]}];
  if(p.cat==="Bearings & Spares") return [{name:"Requirement",options:["Confirm size / type"]}];
  if(p.cat==="Lighting & Electronics") return [{name:"Requirement",options:["Confirm watt / model"]}];
- return [{name:"Specification",options:[p.spec]}];
+ return [{name:"Specification",options:[p.spec||"Confirm exact requirement"]}];
 }
 
 function variantsFor(p){return variantMap[p.id]||genericVariants(p)}
 function detailVariantText(){return Object.entries(selections).map(([k,v])=>`${k}: ${v}`).join(" · ")}
+
+function specificationRows(p,groups){
+ const rows=[
+  ["Brand",p.brand||"Confirm with YK"],
+  ["Model",p.model||"Confirm with YK"],
+  ["Product type",p.name],
+  ["Category",p.cat],
+  ["Catalog code",p.code||"—"],
+  ["Listed specification",p.spec||"Confirm requirement"]
+ ];
+ groups.forEach(group=>rows.push([`Available ${group.name}`,group.options.join(", ")]));
+ return rows;
+}
+
+function renderSpecificationRows(rows){
+ return rows.map(([label,value])=>`<div class="detail-spec-row"><span>${esc(label)}</span><b>${esc(value)}</b></div>`).join("");
+}
+
+function selectDetailTab(btn){
+ const shell=btn.closest(".detail-shell"),tab=btn.dataset.detailTab;
+ shell.querySelectorAll("[data-detail-tab]").forEach(item=>{
+  const active=item===btn;
+  item.classList.toggle("active",active);
+  item.setAttribute("aria-selected",String(active));
+ });
+ shell.querySelectorAll("[data-detail-panel]").forEach(panel=>{panel.hidden=panel.dataset.detailPanel!==tab});
+}
 
 function ensureModal(){
  if(document.getElementById("productDetail")) return;
@@ -62,11 +89,15 @@ function openDetail(id){
  const actualImage=typeof hasActualProductImage==="function"?hasActualProductImage(p):true;
  const fallback=typeof fallbackImage==="function"?fallbackImage(p):"assets/product-breaker.svg";
  const image=safeUrl(p.img,fallback);
+ const specificationRowsForProduct=specificationRows(p,groups);
  const shell=document.getElementById("detailShell");
  shell.innerHTML=`
-  <div class="detail-top"><span class="detail-breadcrumb">${esc(p.cat)} / ${esc(p.brand)}</span><button class="detail-close" id="detailClose" aria-label="Close product details">×</button></div>
+  <div class="detail-top"><nav class="detail-breadcrumb" aria-label="Product breadcrumb"><span>Home</span><i>›</i><span>${esc(p.cat)}</span><i>›</i><span>${esc(p.brand)}</span><i>›</i><b>${esc(p.model||p.name)}</b></nav><button class="detail-close" id="detailClose" aria-label="Close product details">×</button></div>
   <div class="detail-grid">
-   <div class="detail-visual ${actualImage?'image-real':'image-placeholder'}"><span class="detail-badge">${esc(p.badge)}</span><img src="${esc(image)}" data-fallback="${esc(fallback)}" alt="${esc(p.name)}"><span class="detail-image-note">Reference illustration — appearance varies by model.</span></div>
+   <div class="detail-media ${actualImage?'image-real':'image-placeholder'}">
+    <div class="detail-thumbs" aria-label="Product images"><button class="detail-thumb active" type="button" aria-label="Primary product image"><img src="${esc(image)}" data-fallback="${esc(fallback)}" alt=""></button><span>${actualImage?'Product view':'Reference view'}</span></div>
+    <div class="detail-visual ${actualImage?'image-real':'image-placeholder'}"><span class="detail-badge">${esc(p.badge)}</span><img src="${esc(image)}" data-fallback="${esc(fallback)}" alt="${esc(p.name)}"><button class="detail-zoom" id="detailZoom" type="button" aria-label="Zoom product image" aria-pressed="false">⌕</button><span class="detail-image-note">Reference illustration — appearance varies by model.</span></div>
+   </div>
    <div class="detail-info">
     <span class="detail-brand">${esc(p.brand)}</span>
     <h2 id="detailTitle">${esc(p.name)}</h2>
@@ -80,14 +111,33 @@ function openDetail(id){
     <p class="detail-note">Price is confirmed after the exact model/specification and availability are checked.</p>
    </div>
   </div>
+  <div class="detail-trust-strip" aria-label="YK Electric service benefits">
+   <div><span>✓</span><p><b>Brand-matched products</b><small>Model and rating support</small></p></div>
+   <div><span>Rs</span><p><b>Current price</b><small>Confirmed before supply</small></p></div>
+   <div><span>⌁</span><p><b>Technical guidance</b><small>Help choosing the right item</small></p></div>
+   <div><span>▦</span><p><b>Bulk requirements</b><small>Projects and trade enquiries</small></p></div>
+  </div>
+  <div class="detail-content">
+   <div class="detail-tabs" role="tablist" aria-label="Product information">
+    <button class="active" type="button" role="tab" aria-selected="true" data-detail-tab="specifications">Specifications</button>
+    <button type="button" role="tab" aria-selected="false" data-detail-tab="description">Description</button>
+    <button type="button" role="tab" aria-selected="false" data-detail-tab="guidance">Buying guidance</button>
+   </div>
+   <div class="detail-tab-panel" data-detail-panel="specifications">${renderSpecificationRows(specificationRowsForProduct)}</div>
+   <div class="detail-tab-panel detail-copy-panel" data-detail-panel="description" hidden><h3>${esc(p.name)}</h3><p>${esc(p.desc||`${p.brand} ${p.name} for electrical and industrial requirements.`)}</p><p>Final appearance, marking and specification may vary by selected model. YK Electric confirms the exact item before supply.</p></div>
+   <div class="detail-tab-panel detail-guidance-panel" data-detail-panel="guidance" hidden><div><span>1</span><p><b>Choose the specification</b><small>Select the rating, size or model you require.</small></p></div><div><span>2</span><p><b>Send your request</b><small>Add the item to your request cart or continue on WhatsApp.</small></p></div><div><span>3</span><p><b>YK confirms supply</b><small>We verify the exact model, price, availability and delivery.</small></p></div></div>
+  </div>
   ${related.length?`<div class="detail-related"><div class="detail-related-head"><h3>Related products</h3><span>More in ${esc(p.cat)}</span></div><div class="related-grid">${related.map(r=>{const relatedFallback=typeof fallbackImage==="function"?fallbackImage(r):'assets/product-breaker.svg';return `<button type="button" class="related-item ${typeof hasActualProductImage==="function"&&hasActualProductImage(r)?'image-real':'image-placeholder'}" data-related-id="${Number(r.id)}"><img src="${esc(safeUrl(r.img,relatedFallback))}" data-fallback="${esc(relatedFallback)}" alt=""><div><small>${esc(r.brand)}</small><strong>${esc(r.name)}</strong></div></button>`}).join('')}</div></div>`:''}
  `;
+ shell.scrollTop=0;
  document.getElementById("detailClose").onclick=closeDetail;
  shell.querySelectorAll(".variant-option").forEach(btn=>btn.onclick=()=>selectVariant(btn));
  document.getElementById("detailMinus").onclick=()=>changeQty(-1);
  document.getElementById("detailPlus").onclick=()=>changeQty(1);
  document.getElementById("detailAdd").onclick=addDetailToCart;
  document.getElementById("detailWhatsApp").onclick=sendDetailWhatsApp;
+ document.getElementById("detailZoom").onclick=e=>{const visual=e.currentTarget.closest(".detail-visual"),zoomed=visual.classList.toggle("zoomed");e.currentTarget.setAttribute("aria-pressed",String(zoomed))};
+ shell.querySelectorAll("[data-detail-tab]").forEach(btn=>btn.onclick=()=>selectDetailTab(btn));
  shell.querySelectorAll("[data-related-id]").forEach(el=>el.onclick=()=>openDetail(el.dataset.relatedId));
  requestAnimationFrame(()=>{
   document.getElementById("detailOverlay").classList.add("show");
