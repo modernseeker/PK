@@ -1,5 +1,7 @@
 (()=>{
 const WA="9779747359443";
+const esc=window.YKText?.escape||((value)=>String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char])));
+const safeUrl=window.YKText?.safeUrl||((value,fallback="assets/product-breaker.svg")=>/^https:\/\//i.test(String(value||""))||/^assets\//i.test(String(value||""))?String(value):fallback);
 const variantMap={
 4:[{name:"Rating",options:["6A","10A","16A","20A","25A","32A","40A","50A","63A"]},{name:"Pole",options:["SP","DP","TP","FP"]},{name:"Curve",options:["B Curve","C Curve","D Curve"]}],
 5:[{name:"Rating",options:["100A","125A","160A","200A","250A"]},{name:"Pole",options:["3P","4P"]},{name:"Breaking Capacity",options:["25kA","36kA"]}],
@@ -39,6 +41,7 @@ function ensureModal(){
  overlay.id="detailOverlay"; overlay.className="detail-overlay";
  const modal=document.createElement("section");
  modal.id="productDetail"; modal.className="product-detail"; modal.setAttribute("aria-hidden","true");
+ modal.setAttribute("inert","");
  modal.setAttribute("role","dialog"); modal.setAttribute("aria-modal","true"); modal.setAttribute("aria-labelledby","detailTitle");
  modal.innerHTML='<div class="detail-shell" id="detailShell"></div>';
  document.body.append(overlay,modal);
@@ -50,32 +53,34 @@ function relatedFor(p){return products.filter(x=>x.cat===p.cat&&x.id!==p.id).sli
 function openDetail(id){
  const p=products.find(x=>x.id===Number(id));
  if(!p) return;
- detailTrigger=document.activeElement;
+ const existingModal=document.getElementById("productDetail");
+ if(!existingModal||existingModal.getAttribute("aria-hidden")==="true")detailTrigger=document.activeElement;
  ensureModal(); currentProduct=p; selections={};
  const groups=variantsFor(p);
  groups.forEach(g=>selections[g.name]=g.options[0]);
  const related=relatedFor(p);
  const actualImage=typeof hasActualProductImage==="function"?hasActualProductImage(p):true;
  const fallback=typeof fallbackImage==="function"?fallbackImage(p):"assets/product-breaker.svg";
+ const image=safeUrl(p.img,fallback);
  const shell=document.getElementById("detailShell");
  shell.innerHTML=`
-  <div class="detail-top"><span class="detail-breadcrumb">${p.cat} / ${p.brand}</span><button class="detail-close" id="detailClose" aria-label="Close product details">×</button></div>
+  <div class="detail-top"><span class="detail-breadcrumb">${esc(p.cat)} / ${esc(p.brand)}</span><button class="detail-close" id="detailClose" aria-label="Close product details">×</button></div>
   <div class="detail-grid">
-   <div class="detail-visual ${actualImage?'image-real':'image-placeholder'}"><span class="detail-badge">${p.badge}</span><img src="${p.img||fallback}" data-fallback="${fallback}" alt="${p.name}"><span class="detail-image-note">Reference illustration — appearance varies by model.</span></div>
+   <div class="detail-visual ${actualImage?'image-real':'image-placeholder'}"><span class="detail-badge">${esc(p.badge)}</span><img src="${esc(image)}" data-fallback="${esc(fallback)}" alt="${esc(p.name)}"><span class="detail-image-note">Reference illustration — appearance varies by model.</span></div>
    <div class="detail-info">
-    <span class="detail-brand">${p.brand}</span>
-    <h2 id="detailTitle">${p.name}</h2>
-    <div class="detail-model">${p.model}</div>
-    <span class="detail-code">${p.code}</span>
-    <p class="detail-description">${p.desc} Select the required specification below, then send it to YK Electric for current price and availability.</p>
-    <div class="detail-status"><span>● Check availability</span><span>${p.spec}</span></div>
-    ${groups.map(g=>`<div class="variant-group" data-group="${g.name}"><label>${g.name}</label><div class="variant-options">${g.options.map((o,i)=>`<button class="variant-option ${i===0?'active':''}" data-group-name="${g.name}" data-value="${o}">${o}</button>`).join('')}</div></div>`).join('')}
-    <div class="detail-buy"><div class="detail-qty"><button id="detailMinus">−</button><input id="detailQty" value="1" inputmode="numeric"><button id="detailPlus">+</button></div><div class="detail-spec-preview" id="detailSpecPreview">${detailVariantText()}</div></div>
+    <span class="detail-brand">${esc(p.brand)}</span>
+    <h2 id="detailTitle">${esc(p.name)}</h2>
+    <div class="detail-model">${esc(p.model)}</div>
+    <span class="detail-code">${esc(p.code)}</span>
+    <p class="detail-description">${esc(p.desc)} Select the required specification below, then send it to YK Electric for current price and availability.</p>
+    <div class="detail-status"><span>● Check availability</span><span>${esc(p.spec)}</span></div>
+    ${groups.map(g=>`<div class="variant-group" data-group="${esc(g.name)}"><label>${esc(g.name)}</label><div class="variant-options">${g.options.map((o,i)=>`<button class="variant-option ${i===0?'active':''}" data-group-name="${esc(g.name)}" data-value="${esc(o)}">${esc(o)}</button>`).join('')}</div></div>`).join('')}
+    <div class="detail-buy"><div class="detail-qty"><button id="detailMinus">−</button><input id="detailQty" value="1" inputmode="numeric"><button id="detailPlus">+</button></div><div class="detail-spec-preview" id="detailSpecPreview">${esc(detailVariantText())}</div></div>
     <div class="detail-actions"><button class="detail-action cart" id="detailAdd">Add to request cart</button><button class="detail-action whatsapp" id="detailWhatsApp">Ask price on WhatsApp</button></div>
     <p class="detail-note">Price is confirmed after the exact model/specification and availability are checked.</p>
    </div>
   </div>
-  ${related.length?`<div class="detail-related"><div class="detail-related-head"><h3>Related products</h3><span>More in ${p.cat}</span></div><div class="related-grid">${related.map(r=>`<button type="button" class="related-item ${typeof hasActualProductImage==="function"&&hasActualProductImage(r)?'image-real':'image-placeholder'}" data-related-id="${r.id}"><img src="${r.img}" data-fallback="${typeof fallbackImage==="function"?fallbackImage(r):'assets/product-breaker.svg'}" alt=""><div><small>${r.brand}</small><strong>${r.name}</strong></div></button>`).join('')}</div></div>`:''}
+  ${related.length?`<div class="detail-related"><div class="detail-related-head"><h3>Related products</h3><span>More in ${esc(p.cat)}</span></div><div class="related-grid">${related.map(r=>{const relatedFallback=typeof fallbackImage==="function"?fallbackImage(r):'assets/product-breaker.svg';return `<button type="button" class="related-item ${typeof hasActualProductImage==="function"&&hasActualProductImage(r)?'image-real':'image-placeholder'}" data-related-id="${Number(r.id)}"><img src="${esc(safeUrl(r.img,relatedFallback))}" data-fallback="${esc(relatedFallback)}" alt=""><div><small>${esc(r.brand)}</small><strong>${esc(r.name)}</strong></div></button>`}).join('')}</div></div>`:''}
  `;
  document.getElementById("detailClose").onclick=closeDetail;
  shell.querySelectorAll(".variant-option").forEach(btn=>btn.onclick=()=>selectVariant(btn));
@@ -88,6 +93,7 @@ function openDetail(id){
   document.getElementById("detailOverlay").classList.add("show");
   document.getElementById("productDetail").classList.add("open");
   document.getElementById("productDetail").setAttribute("aria-hidden","false");
+  document.getElementById("productDetail").removeAttribute("inert");
   document.body.classList.add("body-detail-open");
   document.getElementById("detailClose").focus();
  });
@@ -96,7 +102,7 @@ function openDetail(id){
 function closeDetail(){
  const overlay=document.getElementById("detailOverlay"),modal=document.getElementById("productDetail");
  if(overlay) overlay.classList.remove("show");
- if(modal){modal.classList.remove("open");modal.setAttribute("aria-hidden","true")}
+ if(modal){modal.classList.remove("open");modal.setAttribute("aria-hidden","true");modal.setAttribute("inert","")}
  document.body.classList.remove("body-detail-open");
  if(detailTrigger&&typeof detailTrigger.focus==="function")detailTrigger.focus();
 }
@@ -135,7 +141,7 @@ function enhancedRenderCart(){
  save();
  const wrap=document.getElementById("cartItems"); if(!wrap) return;
  if(!cart.length){wrap.innerHTML='<div class="cart-empty"><b>Your request cart is empty.</b><p>Add products from the catalog.</p></div>';return}
- wrap.innerHTML=cart.map((x,index)=>{const p=products.find(v=>v.id===x.id);if(!p)return'';return `<div class="cart-item"><h4>${p.name}</h4><span>${p.brand} · ${p.code}${x.variant?`<br>${x.variant}`:''}</span><div class="cart-controls"><button data-ecminus="${index}">−</button><b>${x.qty}</b><button data-ecplus="${index}">+</button><button class="remove" data-eremove="${index}">Remove</button></div></div>`}).join('');
+ wrap.innerHTML=cart.map((x,index)=>{const p=products.find(v=>v.id===x.id);if(!p)return'';return `<div class="cart-item"><h4>${esc(p.name)}</h4><span>${esc(p.brand)} · ${esc(p.code)}${x.variant?`<br>${esc(x.variant)}`:''}</span><div class="cart-controls"><button data-ecminus="${index}">−</button><b>${Math.max(1,Number(x.qty)||1)}</b><button data-ecplus="${index}">+</button><button class="remove" data-eremove="${index}">Remove</button></div></div>`}).join('');
  wrap.querySelectorAll('[data-ecminus]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.ecminus);cart[i].qty=Math.max(1,cart[i].qty-1);enhancedRenderCart()});
  wrap.querySelectorAll('[data-ecplus]').forEach(b=>b.onclick=()=>{cart[Number(b.dataset.ecplus)].qty++;enhancedRenderCart()});
  wrap.querySelectorAll('[data-eremove]').forEach(b=>b.onclick=()=>{cart.splice(Number(b.dataset.eremove),1);enhancedRenderCart()});

@@ -83,7 +83,12 @@
     document.querySelectorAll('a[href^="mailto:"]').forEach(a=>{if(email)a.href=`mailto:${email}`});
     document.querySelectorAll('a[href*="wa.me/"]').forEach(a=>{if(whatsapp)a.href=`https://wa.me/${whatsapp.startsWith('977')?whatsapp:'977'+whatsapp}`});
     const contactP=document.querySelector('.contact-card p');
-    if(contactP&&location)contactP.innerHTML=`Talk directly with ${businessName} — ${location} · <span id="phoneText">${phone}</span> · <span id="emailText">${email}</span>`;
+    if(contactP&&location){
+      const phoneText=document.createElement('span'),emailText=document.createElement('span');
+      phoneText.id='phoneText';phoneText.textContent=phone;
+      emailText.id='emailText';emailText.textContent=email;
+      contactP.replaceChildren(document.createTextNode(`Talk directly with ${businessName} — ${location} · `),phoneText,document.createTextNode(' · '),emailText);
+    }
 
     document.documentElement.dataset.liveStore=data.source||'loaded';
     window.dispatchEvent(new CustomEvent('yk:store-loaded',{detail:data}));

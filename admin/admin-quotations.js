@@ -42,7 +42,7 @@
     injectModal();
     $('#quoteEditorBody').innerHTML='<div class="quote-loading">Loading quotation…</div>';modal.hidden=false;
     try{
-      const rows=await rest(`enquiries?id=eq.${encodeURIComponent(id)}&select=id,reference_code,customer_name,phone,business_name,location,notes,status,enquiry_items(id,product_id,product_name,quantity)&limit=1`);
+      const rows=await rest(`enquiries?id=eq.${encodeURIComponent(id)}&select=id,reference_code,customer_name,phone,business_name,location,notes,status,enquiry_items(id,product_id,product_name,quantity,specification)&limit=1`);
       if(!rows?.[0])throw new Error('Enquiry could not be found.');
       currentEnquiry=rows[0];
       const quotes=await rest(`quotations?enquiry_id=eq.${encodeURIComponent(id)}&select=*,quotation_items(*)&order=created_at.desc&limit=1`);
@@ -53,12 +53,13 @@
 
   function initialItems(){
     if(currentQuote?.quotation_items?.length)return [...currentQuote.quotation_items].sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
-    return (currentEnquiry?.enquiry_items||[]).map((i,index)=>({product_id:i.product_id,description:i.product_name,model:'',specification:'',quantity:Number(i.quantity)||1,unit:'pcs',unit_price:0,discount_percent:0,sort_order:index+1}));
+    return (currentEnquiry?.enquiry_items||[]).map((i,index)=>({product_id:i.product_id,description:i.product_name,model:'',specification:i.specification||'',quantity:Number(i.quantity)||1,unit:'pcs',unit_price:0,discount_percent:0,sort_order:index+1}));
   }
 
   function lineMarkup(i,index){
     return `<div class="quote-line" data-line="${index}">
       <div class="quote-line-main"><label><span>Item</span><input class="q-desc" value="${esc(i.description||'')}" maxlength="220"></label><button type="button" class="quote-remove" data-remove-line="${index}" title="Remove">×</button></div>
+      <label class="quote-line-spec"><span>Specification</span><input class="q-specification" value="${esc(i.specification||'')}" maxlength="500" placeholder="Rating, pole, curve, size or model"></label>
       <div class="quote-line-grid">
         <label><span>Qty</span><input class="q-qty" type="number" min="0.001" step="0.001" value="${Number(i.quantity||1)}"></label>
         <label><span>Unit</span><select class="q-unit">${units.map(u=>`<option ${u===(i.unit||'pcs')?'selected':''}>${u}</option>`).join('')}</select></label>
@@ -131,7 +132,7 @@
     const fd=new FormData(form);
     const items=[...document.querySelectorAll('#quoteLines .quote-line')].map((row,index)=>({
       product_id:row.querySelector('.q-product-id').value?Number(row.querySelector('.q-product-id').value):null,
-      description:row.querySelector('.q-desc').value.trim(),quantity:Number(row.querySelector('.q-qty').value)||0,unit:row.querySelector('.q-unit').value,
+      description:row.querySelector('.q-desc').value.trim(),specification:row.querySelector('.q-specification').value.trim()||null,quantity:Number(row.querySelector('.q-qty').value)||0,unit:row.querySelector('.q-unit').value,
       unit_price:Number(row.querySelector('.q-price').value)||0,discount_percent:Number(row.querySelector('.q-discount').value)||0,sort_order:index+1
     })).filter(i=>i.description||i.quantity||i.unit_price);
     if(!String(fd.get('customer_name')||'').trim())throw new Error('Customer name is required.');
@@ -187,7 +188,7 @@
 
   async function printQuote(){
     try{await ensureSaved();const data=collect(),t=totals(data),s=settings(),quote=currentQuote;const logo=new URL('../assets/yk-logo.svg',location.href).href;
-      const rows=data.items.map((i,n)=>`<tr><td>${n+1}</td><td><b>${esc(i.description)}</b></td><td>${i.quantity} ${esc(i.unit)}</td><td>${money(i.unit_price)}</td><td>${i.discount_percent?`${i.discount_percent}%`:'—'}</td><td>${money(i.quantity*i.unit_price*(1-i.discount_percent/100))}</td></tr>`).join('');
+      const rows=data.items.map((i,n)=>`<tr><td>${n+1}</td><td><b>${esc(i.description)}</b>${i.specification?`<div>${esc(i.specification)}</div>`:''}</td><td>${i.quantity} ${esc(i.unit)}</td><td>${money(i.unit_price)}</td><td>${i.discount_percent?`${i.discount_percent}%`:'—'}</td><td>${money(i.quantity*i.unit_price*(1-i.discount_percent/100))}</td></tr>`).join('');
       const w=window.open('','_blank');if(!w)throw new Error('Allow pop-ups to open the quotation preview.');
       w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${esc(quote.quote_number)}</title><style>@page{size:A4;margin:14mm}*{box-sizing:border-box}body{margin:0;color:#13283d;font:12px Arial,sans-serif}.head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #126ed8;padding-bottom:16px}.brand{display:flex;gap:14px;align-items:center}.brand img{width:74px;height:74px;object-fit:contain}.brand h1{margin:0;font-size:22px}.brand p,.right p{margin:5px 0;color:#607386}.right{text-align:right}.title{margin:28px 0 16px;display:flex;justify-content:space-between;align-items:end}.title h2{margin:0;font-size:25px}.pill{padding:7px 10px;border-radius:999px;background:#eaf3ff;color:#126ed8;font-weight:700}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}.box{border:1px solid #dce5ed;border-radius:10px;padding:12px}.box small{display:block;color:#718396;font-weight:700;margin-bottom:5px}.box b{font-size:13px}table{width:100%;border-collapse:collapse;margin-top:10px}th{background:#0d2842;color:#fff;padding:9px 7px;text-align:left;font-size:10px}td{padding:10px 7px;border-bottom:1px solid #e3e9ef;vertical-align:top}th:last-child,td:last-child{text-align:right}.totals{width:330px;margin:18px 0 0 auto}.totals div{display:flex;justify-content:space-between;padding:6px 0}.totals .grand{margin-top:6px;padding:10px;border-top:2px solid #0d2842;font-size:16px;font-weight:800}.notes{margin-top:25px;display:grid;grid-template-columns:1fr 1fr;gap:14px}.notes div{border:1px solid #dce5ed;border-radius:9px;padding:12px;min-height:80px}.notes h3{margin:0 0 8px;font-size:11px}.notes p{margin:0;white-space:pre-wrap;line-height:1.5;color:#566a7d}.foot{margin-top:34px;padding-top:13px;border-top:1px solid #dce5ed;display:flex;justify-content:space-between;color:#718396;font-size:10px}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body><div class="head"><div class="brand"><img src="${logo}"><div><h1>${esc(s.businessName||'YK Electric & Electronic')}</h1><p>${esc(s.location||'Butwal, Nepal')}</p><p>${esc(s.phone||'9747359443')} · ${esc(s.email||'ykelectricnepal@gmail.com')}</p></div></div><div class="right"><b>QUOTATION</b><p>${esc(quote.quote_number)}</p><p>Date: ${new Date().toLocaleDateString('en-NP')}</p><p>Valid until: ${esc(data.header.valid_until||'—')}</p></div></div><div class="title"><h2>Sales Quotation</h2><span class="pill">NPR</span></div><div class="grid"><div class="box"><small>QUOTED TO</small><b>${esc(data.header.customer_name)}</b><div>${esc(data.header.business_name||'')}</div><div>${esc(data.header.location||'')}</div><div>${esc(data.header.phone||'')}</div></div><div class="box"><small>REFERENCE</small><b>${esc(currentEnquiry.reference_code||currentEnquiry.id)}</b><div>Prepared by YK Electric</div></div></div><table><thead><tr><th>#</th><th>Description</th><th>Qty</th><th>Unit price</th><th>Disc.</th><th>Amount</th></tr></thead><tbody>${rows}</tbody></table><div class="totals"><div><span>Subtotal</span><b>${money(t.subtotal)}</b></div><div><span>Discount</span><b>− ${money(t.discount)}</b></div><div><span>VAT (${data.header.vat_percent}%)</span><b>${money(t.vat)}</b></div><div><span>Delivery</span><b>${money(t.delivery)}</b></div><div class="grand"><span>Total</span><b>${money(t.grand)}</b></div></div><div class="notes"><div><h3>Notes</h3><p>${esc(data.header.notes||'')}</p></div><div><h3>Terms</h3><p>${esc(data.header.terms||'')}</p></div></div><div class="foot"><span>Thank you for choosing YK Electric & Electronic.</span><span>Authorized quotation</span></div><script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>`);w.document.close();
     }catch(e){if(!String(e.message).includes('Quotation'))alert(e.message)}

@@ -10,8 +10,8 @@
 
   function currentCart(){try{return Array.isArray(cart)?cart:JSON.parse(localStorage.getItem('yk_request_cart')||'[]')}catch(e){return[]}}
   function productFor(id){try{return products.find(p=>Number(p.id)===Number(id))}catch(e){return null}}
-  function items(){return currentCart().map(x=>{const p=productFor(x.id);return p?{id:Number(p.id),qty:Math.max(1,Number(x.qty)||1),product:p}:null}).filter(Boolean)}
-  function summary(){return items().map(i=>`<div class="enquiry-summary-item"><span>${esc(`${i.product.brand} ${i.product.name} (${i.product.code})`)}</span><b>Qty ${i.qty}</b></div>`).join('')}
+  function items(){return currentCart().map(x=>{const p=productFor(x.id),specification=String(x.variant||'').trim().slice(0,500);return p?{id:Number(p.id),qty:Math.max(1,Number(x.qty)||1),specification,product:p}:null}).filter(Boolean)}
+  function summary(){return items().map(i=>`<div class="enquiry-summary-item"><span>${esc(`${i.product.brand} ${i.product.name} (${i.product.code})`)}${i.specification?`<small>${esc(i.specification)}</small>`:''}</span><b>Qty ${i.qty}</b></div>`).join('')}
   function formMarkup(){
     return `<form id="enquiryForm" class="enquiry-form">
       <div class="enquiry-summary"><div class="enquiry-summary-title"><b>Request cart</b><span>${items().length} item${items().length===1?'':'s'}</span></div>${summary()}</div>
@@ -30,6 +30,7 @@
   }
   function open(){
     if(!items().length){try{openCart?.()}catch(e){}return}
+    try{closeCart?.()}catch(e){}
     $('#enquiryBody').innerHTML=formMarkup();modal.hidden=false;document.documentElement.classList.add('enquiry-open');
     $('#enquiryForm').addEventListener('submit',submit);$('#enquiryWhatsApp').onclick=whatsApp;setTimeout(()=>$('#enquiryForm input[name="customer_name"]')?.focus(),30);
   }
@@ -48,7 +49,7 @@
     btn.disabled=true;btn.textContent='Sending securely…';error.textContent='';
     try{
       const res=await fetch(`${cfg.url}/rest/v1/rpc/submit_enquiry`,{method:'POST',headers:{apikey:cfg.publishableKey,Authorization:`Bearer ${cfg.publishableKey}`,'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({
-        p_customer_name:name,p_phone:phone,p_business_name:String(fd.get('business_name')||'').trim()||null,p_location:String(fd.get('location')||'').trim()||null,p_notes:String(fd.get('notes')||'').trim()||null,p_items:requestItems.map(i=>({id:i.id,qty:i.qty}))
+        p_customer_name:name,p_phone:phone,p_business_name:String(fd.get('business_name')||'').trim()||null,p_location:String(fd.get('location')||'').trim()||null,p_notes:String(fd.get('notes')||'').trim()||null,p_items:requestItems.map(i=>({id:i.id,qty:i.qty,specification:i.specification||null}))
       })});
       const body=await res.json().catch(()=>null);if(!res.ok)throw new Error(body?.message||body?.hint||'The enquiry could not be sent.');
       localStorage.setItem('yk_last_enquiry_time',String(Date.now()));
