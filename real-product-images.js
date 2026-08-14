@@ -1,13 +1,18 @@
 (()=>{
 const realImages={
-  1:{url:"https://rameshcorp.com/assets/new_pages/images/litmus/products/wireroll.jpg",backupUrl:"https://rameshcorp.com/assets/new_pages/images/litmus/products/bigwire.png",source:"Ramesh Corp / Lotus Winding Wires official",fallback:"assets/product-wire.svg"},
-  3:{url:"https://rameshcorp.com/assets/new_pages/images/litmus/products/newfr.png",source:"Litmus official",fallback:"assets/product-wire.svg"},
-  4:{url:"https://www.chintglobal.com/content/dam/chint/global/product-center/low-voltage/iec/final-power-distribution/mcb/nb1-63g/product-image/NB1-63G%20%20C63%201P-MCB-Front.png",source:"CHINT official",fallback:"assets/product-breaker.svg"},
-  5:{url:"https://www.chintglobal.com/content/dam/chint/global/product-center/low-voltage/iec/secondary-power-distribution/mccb/nm8n/product-image/new/NM8N-125S%204P-MCCB-1.png",source:"CHINT official",fallback:"assets/product-breaker.svg"},
-  8:{url:"https://www.chintglobal.com/content/dam/chint/global/product-center/low-voltage/iec/industrial-control/ac-contactor/nc1/product-image/new/NC1-09N-AC%20Contactor-1.jpg",source:"CHINT official",fallback:"assets/product-contactor.svg"},
-  16:{url:"https://www.tibcon.net/images/a57ce4dc6c9c470d9edc182ce6ef5a3b.png",source:"TIBCON official",fallback:"assets/product-capacitor.svg"},
-  17:{url:"https://www.tibcon.net/images/68301a26a036ea9d85b6ffa5c7a89d58.png",source:"TIBCON official",fallback:"assets/product-capacitor.svg"},
-  18:{url:"https://www.tibcon.net/images/3dd9fff8cd0c9b681509ac561fd67a1b.png",source:"TIBCON official",fallback:"assets/product-capacitor.svg"}
+  1:{url:"assets/product-photos/lotus-enamel-wire.webp",source:"Ramesh Corp / Lotus Winding Wires official",sourceUrl:"https://rameshcorp.com/industry",fallback:"assets/product-wire.svg"},
+  3:{url:"assets/product-photos/litmus-house-wire.webp",source:"Litmus official",sourceUrl:"https://www.litmus.com.np/",fallback:"assets/product-wire.svg"},
+  4:{url:"assets/product-photos/chint-nb1-mcb.webp",source:"CHINT official",sourceUrl:"https://www.chintglobal.com/global/en/products/low-voltage/iec/final-power-distribution/nb1-63g.html",fallback:"assets/product-breaker.svg"},
+  5:{url:"assets/product-photos/chint-nm8-mccb.webp",source:"CHINT official",sourceUrl:"https://www.chintglobal.com/global/en/products/low-voltage/iec/secondary-power-distribution/nm8n.html",fallback:"assets/product-breaker.svg"},
+  6:{url:"assets/product-photos/chint-nxble-32.webp",source:"CHINT official",sourceUrl:"https://www.chintglobal.com/global/en/products/low-voltage/iec/final-power-distribution/nxble-32.html",fallback:"assets/product-breaker.svg"},
+  7:{url:"assets/product-photos/chint-nu6-iig.webp",source:"CHINT official",sourceUrl:"https://www.chintglobal.com/global/en/products/low-voltage/iec/final-power-distribution/nu6-iig.html",fallback:"assets/product-breaker.svg"},
+  8:{url:"assets/product-photos/chint-nc1-contactor.webp",source:"CHINT official",sourceUrl:"https://www.chintglobal.com/global/en/products/low-voltage/iec/industrial-control/nc1.html",fallback:"assets/product-contactor.svg"},
+  9:{url:"assets/product-photos/chint-nr2.webp",source:"CHINT official",sourceUrl:"https://www.chintglobal.com/global/en/products/low-voltage/iec/industrial-control/nr2.html",fallback:"assets/product-contactor.svg"},
+  12:{url:"assets/product-photos/selec-800xu.webp",source:"Selec official",sourceUrl:"https://www.selec.com/product-details/analog-timers-225mm-din-rail-2-functions-12-time-ranges-universal-power-supply",fallback:"assets/product-automation.svg"},
+  13:{url:"assets/product-photos/selec-tc544a.webp",source:"Selec official",sourceUrl:"https://www.selec.com/product-details/temprature-controllerdigital1",fallback:"assets/product-automation.svg"},
+  16:{url:"assets/product-photos/tibcon-motor-run.webp",source:"TIBCON official",sourceUrl:"https://www.tibcon.net/",fallback:"assets/product-capacitor.svg"},
+  17:{url:"assets/product-photos/tibcon-submersible.webp",source:"TIBCON official",sourceUrl:"https://www.tibcon.net/",fallback:"assets/product-capacitor.svg"},
+  18:{url:"assets/product-photos/tibcon-pfc.webp",source:"TIBCON official",sourceUrl:"https://www.tibcon.net/",fallback:"assets/product-capacitor.svg"}
 };
 
 const trendingIds=new Set([4,8,16,1]);

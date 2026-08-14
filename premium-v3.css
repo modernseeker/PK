@@ -219,22 +219,70 @@ body {
 }
 
 .brand-strip-inner {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
   min-height: 72px !important;
   overflow: hidden;
   border-radius: 11px;
+  background: #fff !important;
+  filter: none !important;
 }
 
+.brand-chip,
 .brand-chip:is(button) {
+  display: grid !important;
+  place-items: center;
   min-height: 72px;
+  padding: 11px 14px;
   border-right: 1px solid #e7edf2;
+  background: #fff;
   font-size: 16px;
   transition: color .18s ease, background .18s ease, transform .18s ease;
+}
+
+.brand-chip img {
+  width: auto;
+  height: auto;
+  max-width: 138px;
+  max-height: 44px;
+  object-fit: contain;
+  filter: saturate(.92);
+  transition: filter .18s ease, transform .18s ease;
+}
+
+.brand-chip small {
+  margin-top: 5px;
+  color: #718293;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(3px);
+  transition: opacity .18s ease, transform .18s ease, color .18s ease;
 }
 
 .brand-chip:is(button):hover,
 .brand-chip:is(button).active {
   transform: none;
   background: var(--premium-navy);
+}
+
+.brand-chip:is(button):hover img,
+.brand-chip:is(button).active img {
+  filter: saturate(1.08) brightness(1.04);
+  transform: scale(1.03);
+}
+
+.brand-chip:is(button):hover small,
+.brand-chip:is(button).active small {
+  color: #a9c9ed;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.brand-chip:last-child {
+  border-right: 0;
 }
 
 /* Application collections */
@@ -698,7 +746,8 @@ body {
   }
 
   .brand-strip-inner {
-    display: flex;
+    display: flex !important;
+    grid-template-columns: none !important;
     min-height: 62px !important;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -709,11 +758,18 @@ body {
     display: none;
   }
 
+  .brand-chip,
   .brand-chip:is(button) {
     flex: 0 0 130px;
     min-height: 62px;
+    padding: 9px 12px;
     scroll-snap-align: start;
     border-bottom: 0;
+  }
+
+  .brand-chip img {
+    max-width: 112px;
+    max-height: 36px;
   }
 
   .collection-card {
