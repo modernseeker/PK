@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">YK Electric app icon</title>
+  <desc id="desc">Blue and navy YK monogram with an electrical lightning motif.</desc>
+  <rect width="512" height="512" rx="112" fill="#ffffff"/>
+  <rect x="24" y="24" width="464" height="464" rx="96" fill="#f5f9ff" stroke="#d9e8fb" stroke-width="12"/>
+  <g transform="translate(72 128) scale(1.82)">
+    <path d="M18 8h23l25 31L91 8h23L77 54v36H54V54z" fill="#1264d8"/>
+    <path d="M120 8h22v31l27-31h28l-35 39 38 43h-29l-29-34v34h-22z" fill="#071d33"/>
+    <path d="M105 20 88 53h17L91 86l36-45h-20l18-21z" fill="#ffffff" stroke="#f28c18" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M18 94h181" stroke="#1264d8" stroke-width="5" stroke-linecap="round"/>
+  </g>
+</svg>
