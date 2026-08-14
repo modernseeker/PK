@@ -175,6 +175,7 @@
       const rows=await rest(`quotations?id=eq.${encodeURIComponent(id)}&select=*,quotation_items(*)&limit=1`);currentQuote=rows?.[0]||currentQuote;
       $('#quoteEditorTitle').textContent=currentQuote?.quote_number||'Quotation';
       if(status)status.textContent=markSent?`${currentQuote.quote_number} marked as sent.`:`${currentQuote.quote_number} saved.`;
+      document.dispatchEvent(new CustomEvent('yk-quotation-saved',{detail:{id,status:markSent?'sent':currentQuote?.status||'draft'}}));
       if(markSent)document.querySelector('#refreshEnquiries')?.click();
       if(!silent)setTimeout(()=>{if(status)status.textContent=''},2500);
       return currentQuote;

@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="admin.css?v=1">
   <link rel="stylesheet" href="admin-sync.css?v=3">
-  <link rel="stylesheet" href="admin-polish.css?v=1">
+  <link rel="stylesheet" href="admin-polish.css?v=2">
   <link rel="stylesheet" href="admin-upload.css?v=1">
   <link rel="stylesheet" href="admin-enquiries.css?v=1">
   <link rel="stylesheet" href="admin-quotations.css?v=1">
@@ -19,10 +19,12 @@
 <body>
   <div class="admin-app">
     <aside class="sidebar" id="sidebar">
-      <div class="brand-block"><img src="../assets/yk-logo.svg" alt="YK Electric"><div><strong>YK ADMIN</strong><span>Store Management</span></div></div>
+      <div class="brand-block"><img src="../assets/yk-logo.svg" alt="YK Electric"><div><strong>YK ADMIN</strong><span>Sales & Catalog</span></div></div>
       <nav class="side-nav" id="sideNav">
+        <small class="nav-section-label" data-nav-label="core">CORE WORKFLOW</small>
         <button class="nav-item active" data-page="dashboard"><span>▦</span>Dashboard</button>
         <button class="nav-item" data-page="products"><span>◫</span>Products</button>
+        <small class="nav-section-label" data-nav-label="setup">STOREFRONT SETUP</small>
         <button class="nav-item" data-page="categories"><span>⌗</span>Categories</button>
         <button class="nav-item" data-page="brands"><span>◆</span>Brands</button>
         <button class="nav-item" data-page="homepage"><span>⌂</span>Homepage</button>
@@ -53,21 +55,11 @@
 
   <div class="toast" id="toast" role="status"></div>
   <script src="../supabase-config.js?v=3"></script>
-  <script src="admin-polish.js?v=13"></script>
+  <script src="admin-polish.js?v=14"></script>
   <script src="admin-upload.js?v=2"></script>
   <script src="admin.js?v=1"></script>
   <script src="admin-sync.js?v=5"></script>
   <script src="admin-enquiries.js?v=2"></script>
-  <script src="admin-quotations.js?v=1"></script>
-  <script src="inv-chunk1.js?v=1"></script>
-  <script src="inv-chunk2.js?v=1"></script>
-  <script src="inv-chunk3.js?v=1"></script>
-  <script src="inv-chunk4a.js?v=1"></script>
-  <script src="inv-chunk4b.js?v=1"></script>
-  <script src="inv-chunk5a.js?v=1"></script>
-  <script src="inv-chunk5b1.js?v=1"></script>
-  <script src="inv-chunk5b21.js?v=1"></script>
-  <script src="inv-chunk5b22.js?v=1"></script>
-  <script src="admin-invoices.js?v=1"></script>
+  <script src="admin-quotations.js?v=2"></script>
 </body>
 </html>
