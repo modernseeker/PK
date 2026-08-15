@@ -24,7 +24,7 @@
         <label class="wide"><span>Notes or exact specifications</span><textarea name="notes" maxlength="1200" rows="3" placeholder="Model, ampere, voltage, size, delivery details…"></textarea></label>
         <label class="enquiry-honey" aria-hidden="true"><span>Website</span><input name="website" tabindex="-1" autocomplete="off"></label>
       </div>
-      <p class="enquiry-privacy">Submitting this request does not place a paid order. YK Electric will confirm price, availability and delivery with you.</p>
+      <p class="enquiry-privacy">Submitting does not place a paid order. You ask YK Electric to use these details to respond to your enquiry. <a href="privacy.html" target="_blank" rel="noopener">Privacy policy</a>.</p>
       <div class="enquiry-actions"><button type="button" class="enquiry-wa" id="enquiryWhatsApp">Continue on WhatsApp</button><button type="submit" class="enquiry-submit" id="submitEnquiry">Submit enquiry</button></div>
       <p class="enquiry-error" id="enquiryError" role="alert"></p>
     </form>`;
