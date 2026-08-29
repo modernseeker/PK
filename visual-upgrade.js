@@ -27,6 +27,7 @@
       ".featured-grid",
       ".catalog-head",
       ".filters",
+      ".catalog-guidance",
       ".product-grid",
       ".business-card",
       ".faq-intro",
@@ -50,6 +51,16 @@
       });
     });
   }
+
+  document.querySelectorAll("[data-quick-search]").forEach(button=>{
+    button.addEventListener("click",()=>{
+      const search=document.getElementById("heroSearch");
+      const category=document.getElementById("heroCategory");
+      if(search)search.value=button.dataset.quickSearch||"";
+      if(category)category.value="";
+      document.getElementById("heroSearchBtn")?.click();
+    });
+  });
 
   const hero=document.querySelector(".hero-shell");
   if(hero&&!reduceMotion){
