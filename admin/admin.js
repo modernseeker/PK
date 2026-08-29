@@ -1,5 +1,6 @@
 (()=>{
   const KEY='yk_admin_state_v1';
+  const DIRTY_KEY='yk_admin_dirty_v1';
   const categories=[
     {name:'Wires & Cables',icon:'〰'},
     {name:'Protection',icon:'⚡'},
@@ -39,7 +40,8 @@
   ].map(([id,brand,name,model,spec,cat,badge,img])=>({
     id,brand,name,model,spec,cat,badge,img,
     price:'Price on request',stock:'Check Stock',featured:[4,8,16,1].includes(id),
-    desc:'',code:`YK-${String(id).padStart(3,'0')}`
+    desc:'',code:`YK-${String(id).padStart(3,'0')}`,
+    stockQuantity:0,reorderLevel:0,costPrice:0,stockUnit:'pcs',trackInventory:false
   }));
 
   const defaultState=()=>({
@@ -57,11 +59,12 @@
     return '../assets/product-breaker.svg';
   };
   const clone=o=>JSON.parse(JSON.stringify(o));
+  const normalizeProduct=p=>({stockQuantity:0,reorderLevel:0,costPrice:0,stockUnit:'pcs',trackInventory:false,...p});
 
   function loadState(){
     try{
       const parsed=JSON.parse(localStorage.getItem(KEY)||'null');
-      if(parsed&&Array.isArray(parsed.products)&&Array.isArray(parsed.brands)) return parsed;
+      if(parsed&&Array.isArray(parsed.products)&&Array.isArray(parsed.brands)) return {...parsed,products:parsed.products.map(normalizeProduct)};
     }catch(e){}
     return defaultState();
   }
@@ -69,7 +72,9 @@
 
   function saveState(){
     localStorage.setItem(KEY,JSON.stringify(state));
+    localStorage.setItem(DIRTY_KEY,'1');
     renderAll();
+    document.dispatchEvent(new CustomEvent('yk-admin-draft-changed'));
   }
 
   let toastTimer;
@@ -118,24 +123,64 @@
     return stock==='In Stock'?'in':stock==='Out of Stock'?'out':'check';
   }
 
+  function catalogChecks(product){
+    const price=String(product.price||'').trim().toLowerCase();
+    const image=String(product.img||'').trim();
+    const checks={
+      price:!!price&&!['price on request','contact for price','ask for price'].includes(price),
+      image:/^https?:\/\//i.test(image),
+      stock:product.trackInventory===true||String(product.stock||'')!=='Check Stock',
+      description:String(product.desc||'').trim().length>=20
+    };
+    const complete=Object.values(checks).filter(Boolean).length;
+    return {...checks,complete,total:4,ready:complete===4};
+  }
+
+  function renderCatalogReadiness(){
+    const total=Math.max(state.products.length,1);
+    const rows=state.products.map(product=>({product,checks:catalogChecks(product)}));
+    const metric=(key,label)=>{
+      const count=rows.filter(row=>row.checks[key]).length;
+      const percent=Math.round(count/total*100);
+      return `<div class="readiness-bar"><span><b>${label}</b><em>${count}/${state.products.length}</em></span><i><u style="width:${percent}%"></u></i></div>`;
+    };
+    const finished=rows.reduce((sum,row)=>sum+row.checks.complete,0);
+    const score=Math.round(finished/(total*4)*100);
+    const attention=rows.filter(row=>!row.checks.ready).sort((a,b)=>a.checks.complete-b.checks.complete||a.product.name.localeCompare(b.product.name));
+    const scoreEl=$('#readinessScore');
+    if(scoreEl)scoreEl.style.setProperty('--score',`${score}%`);
+    if($('#catalogScore'))$('#catalogScore').textContent=`${score}%`;
+    if($('#catalogReadinessCopy'))$('#catalogReadinessCopy').textContent=attention.length?`${attention.length} product${attention.length===1?' needs':'s need'} attention before the catalog is sales ready.`:'Every active product has a price, real photo, confirmed stock and useful description.';
+    if($('#catalogReadinessBars'))$('#catalogReadinessBars').innerHTML=[metric('price','Customer price'),metric('image','Real product photo'),metric('stock','Confirmed stock'),metric('description','Useful description')].join('');
+    if($('#catalogAttentionCount'))$('#catalogAttentionCount').textContent=`${attention.length} product${attention.length===1?'':'s'}`;
+    if($('#catalogAttentionList'))$('#catalogAttentionList').innerHTML=attention.slice(0,4).map(({product,checks})=>{
+      const missing=[!checks.price&&'price',!checks.image&&'photo',!checks.stock&&'stock',!checks.description&&'description'].filter(Boolean);
+      return `<button type="button" data-readiness-edit="${product.id}"><span>${esc(product.name)}</span><small>Add ${esc(missing.join(', '))}</small><b>${checks.complete}/4</b></button>`;
+    }).join('')||'<div class="readiness-complete">✓ Catalog launch checklist complete.</div>';
+    $$('[data-readiness-edit]').forEach(button=>button.onclick=()=>openProductModal(Number(button.dataset.readinessEdit)));
+  }
+
   function renderProducts(){
     const q=$('#productSearch').value.trim().toLowerCase();
     const cat=$('#categoryFilter').value;
     const stock=$('#stockFilter').value;
+    const readiness=$('#readinessFilter').value;
     const rows=state.products.filter(p=>{
       const hay=`${p.name} ${p.brand} ${p.model} ${p.spec} ${p.cat}`.toLowerCase();
-      return (!q||hay.includes(q))&&(!cat||p.cat===cat)&&(!stock||p.stock===stock);
+      const checks=catalogChecks(p);
+      return (!q||hay.includes(q))&&(!cat||p.cat===cat)&&(!stock||p.stock===stock)&&(!readiness||(readiness==='ready'?checks.ready:!checks.ready));
     });
     $('#productCountText').textContent=`${rows.length} product${rows.length===1?'':'s'}`;
-    $('#productTableBody').innerHTML=rows.map(p=>`<tr>
+    $('#productTableBody').innerHTML=rows.map(p=>{const readiness=catalogChecks(p);return `<tr>
       <td><div class="product-cell"><img src="${esc(safeImg(p.img))}" alt=""><div><b>${esc(p.name)}</b><span>${esc(p.model||'No model')} · ${esc(p.spec||'No specification')}</span></div></div></td>
       <td>${esc(p.brand)}</td>
       <td>${esc(p.cat)}</td>
       <td>${esc(p.price||'Price on request')}</td>
-      <td><span class="status-pill ${statusClass(p.stock)}">${esc(p.stock)}</span></td>
+      <td><span class="status-pill ${statusClass(p.stock)}">${esc(p.stock)}</span>${p.trackInventory?`<small class="stock-quantity">${Number(p.stockQuantity||0)} ${esc(p.stockUnit||'pcs')}</small>`:''}</td>
+      <td><span class="readiness-pill ${readiness.ready?'ready':'attention'}">${readiness.ready?'Sales ready':`${readiness.complete}/4 complete`}</span></td>
       <td>${p.featured?'<span class="trend-pill">Trending</span>':'—'}</td>
       <td><div class="row-actions"><button class="icon-btn" data-edit="${p.id}" title="Edit">✎</button><button class="icon-btn delete" data-delete="${p.id}" title="Delete">×</button></div></td>
-    </tr>`).join('');
+    </tr>`}).join('');
     $$('[data-edit]').forEach(b=>b.onclick=()=>openProductModal(Number(b.dataset.edit)));
     $$('[data-delete]').forEach(b=>b.onclick=()=>deleteProduct(Number(b.dataset.delete)));
   }
@@ -167,6 +212,7 @@
     renderCategories();
     renderBrands();
     renderTrending();
+    renderCatalogReadiness();
   }
 
   function openProductModal(id=null){
@@ -196,12 +242,14 @@
     event.preventDefault();
     const fd=new FormData(event.currentTarget);
     const id=Number(fd.get('id'))||null;
+    const previous=id?state.products.find(p=>p.id===id)||{}:{};
     const item={
       id:id||Math.max(0,...state.products.map(p=>p.id))+1,
       name:String(fd.get('name')||'').trim(),brand:String(fd.get('brand')||'').trim(),cat:String(fd.get('cat')||'').trim(),
       model:String(fd.get('model')||'').trim(),spec:String(fd.get('spec')||'').trim(),price:String(fd.get('price')||'Price on request').trim(),
       stock:String(fd.get('stock')||'Check Stock'),badge:String(fd.get('badge')||'').trim(),img:String(fd.get('img')||'../assets/product-breaker.svg').trim(),
-      desc:String(fd.get('desc')||'').trim(),featured:fd.get('featured')==='on',code:id?(state.products.find(p=>p.id===id)?.code||`YK-${id}`):`YK-ADM-${Date.now().toString().slice(-6)}`
+      desc:String(fd.get('desc')||'').trim(),featured:fd.get('featured')==='on',code:id?(previous.code||`YK-${id}`):`YK-ADM-${Date.now().toString().slice(-6)}`,
+      stockQuantity:Number(previous.stockQuantity||0),reorderLevel:Number(previous.reorderLevel||0),costPrice:Number(previous.costPrice||0),stockUnit:previous.stockUnit||'pcs',trackInventory:previous.trackInventory===true
     };
     if(item.featured&&!state.products.find(p=>p.id===id)?.featured&&state.products.filter(p=>p.featured).length>=4){
       item.featured=false;
@@ -294,11 +342,20 @@
   $('#productSearch').addEventListener('input',renderProducts);
   $('#categoryFilter').addEventListener('change',renderProducts);
   $('#stockFilter').addEventListener('change',renderProducts);
+  $('#readinessFilter').addEventListener('change',renderProducts);
   $('#addBrandBtn').onclick=addBrand;
   $('#settingsForm').addEventListener('submit',saveSettings);
   $('#resetAdminData').onclick=resetData;
   $('#exportBtn').onclick=exportData;
   $('#menuToggle').onclick=()=>$('#sidebar').classList.toggle('open');
+  $('#viewAttentionProducts').onclick=()=>{gotoPage('products');$('#readinessFilter').value='attention';renderProducts();};
+  $('#openInventoryFromProduct').onclick=()=>{closeProductModal();document.querySelector('[data-page="inventory"]')?.click();};
+  document.addEventListener('yk-inventory-synced',event=>{
+    const cloudProducts=Array.isArray(event.detail?.products)?event.detail.products:[];
+    let changed=false;
+    cloudProducts.forEach(cloud=>{const local=state.products.find(product=>Number(product.id)===Number(cloud.id));if(!local)return;local.stockQuantity=Number(cloud.stock_quantity||0);local.reorderLevel=Number(cloud.reorder_level||0);local.costPrice=Number(cloud.cost_price||0);local.stockUnit=cloud.stock_unit||'pcs';local.trackInventory=cloud.track_inventory===true;local.stock=cloud.stock_status||local.stock;changed=true;});
+    if(changed){localStorage.setItem(KEY,JSON.stringify(state));renderAll();}
+  });
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeProductModal()});
 
   fillSettings();
