@@ -10,11 +10,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="admin.css?v=1">
-  <link rel="stylesheet" href="admin-sync.css?v=3">
+  <link rel="stylesheet" href="admin-sync.css?v=4">
   <link rel="stylesheet" href="admin-polish.css?v=2">
   <link rel="stylesheet" href="admin-upload.css?v=1">
   <link rel="stylesheet" href="admin-enquiries.css?v=2">
+  <link rel="stylesheet" href="admin-enquiry-ops.css?v=1">
   <link rel="stylesheet" href="admin-quotations.css?v=2">
+  <link rel="stylesheet" href="admin-quotation-list.css?v=1">
+  <link rel="stylesheet" href="admin-orders.css?v=1">
+  <link rel="stylesheet" href="admin-customers.css?v=1">
+  <link rel="stylesheet" href="admin-inventory.css?v=1">
+  <link rel="stylesheet" href="admin-catalog-readiness.css?v=1">
 </head>
 <body>
   <div class="admin-app">
@@ -40,10 +46,15 @@
       <section class="page active" id="page-dashboard">
         <div class="page-heading"><div><p class="eyebrow">OVERVIEW</p><h1>Welcome back.</h1><p>Manage the YK Electric storefront from one place.</p></div><button class="primary-btn" data-action="add-product">＋ Add Product</button></div>
         <div class="stats-grid"><article class="stat-card"><span class="stat-icon">◫</span><div><small>Total Products</small><strong id="statProducts">24</strong><em>Catalog items</em></div></article><article class="stat-card"><span class="stat-icon">◆</span><div><small>Brands</small><strong id="statBrands">8</strong><em>Active brands</em></div></article><article class="stat-card"><span class="stat-icon">⌗</span><div><small>Categories</small><strong id="statCategories">8</strong><em>Store sections</em></div></article><article class="stat-card"><span class="stat-icon">★</span><div><small>Trending</small><strong id="statTrending">4</strong><em>Homepage products</em></div></article></div>
+        <section class="catalog-readiness" aria-labelledby="catalogReadinessTitle">
+          <div class="readiness-score" id="readinessScore" style="--score:0%"><div><strong id="catalogScore">0%</strong><span>launch ready</span></div></div>
+          <div class="readiness-summary"><p class="eyebrow">CATALOG LAUNCH CENTER</p><h2 id="catalogReadinessTitle">Turn product listings into sales-ready pages.</h2><p id="catalogReadinessCopy">Add customer-facing prices, real photos, confirmed stock and useful descriptions.</p><div class="readiness-bars" id="catalogReadinessBars"></div></div>
+          <div class="readiness-attention"><header><div><small>NEXT TO FINISH</small><strong id="catalogAttentionCount">0 products</strong></div><button class="text-btn" id="viewAttentionProducts" type="button">View all</button></header><div id="catalogAttentionList"></div></div>
+        </section>
         <div class="dashboard-grid"><article class="panel-card"><div class="panel-head"><div><h2>Trending Products</h2><p>Products currently prioritized on the homepage.</p></div><button class="text-btn" data-goto="homepage">Manage</button></div><div id="dashboardTrending" class="mini-product-list"></div></article><article class="panel-card"><div class="panel-head"><div><h2>Quick Actions</h2><p>Common storefront tasks.</p></div></div><div class="quick-actions"><button data-action="add-product"><span>＋</span><b>Add product</b><small>Create a new catalog item</small></button><button data-goto="products"><span>◫</span><b>Manage catalog</b><small>Edit price, stock and specs</small></button><button data-goto="brands"><span>◆</span><b>Manage brands</b><small>Organize brand names</small></button><button data-goto="settings"><span>⚙</span><b>Store settings</b><small>Contact and business details</small></button></div></article></div>
       </section>
 
-      <section class="page" id="page-products"><div class="page-heading compact"><div><p class="eyebrow">CATALOG</p><h1>Products</h1><p>Add, edit and organize products shown on the storefront.</p></div><button class="primary-btn" data-action="add-product">＋ Add Product</button></div><div class="toolbar"><label class="search-box"><span>⌕</span><input id="productSearch" type="search" placeholder="Search product, model or brand"></label><select id="categoryFilter"><option value="">All categories</option></select><select id="stockFilter"><option value="">All stock states</option><option>In Stock</option><option>Check Stock</option><option>Out of Stock</option></select></div><div class="table-card"><div class="table-meta"><span id="productCountText">24 products</span><small>Supabase cloud catalog</small></div><div class="table-scroll"><table><thead><tr><th>Product</th><th>Brand</th><th>Category</th><th>Price</th><th>Status</th><th>Trending</th><th></th></tr></thead><tbody id="productTableBody"></tbody></table></div></div></section>
+      <section class="page" id="page-products"><div class="page-heading compact"><div><p class="eyebrow">CATALOG</p><h1>Products</h1><p>Add, edit and organize products shown on the storefront.</p></div><button class="primary-btn" data-action="add-product">＋ Add Product</button></div><div class="toolbar catalog-toolbar"><label class="search-box"><span>⌕</span><input id="productSearch" type="search" placeholder="Search product, model or brand"></label><select id="categoryFilter"><option value="">All categories</option></select><select id="stockFilter"><option value="">All stock states</option><option>In Stock</option><option>Check Stock</option><option>Out of Stock</option></select><select id="readinessFilter"><option value="">All readiness</option><option value="attention">Needs attention</option><option value="ready">Sales ready</option></select></div><div class="table-card"><div class="table-meta"><span id="productCountText">24 products</span><small>Supabase cloud catalog</small></div><div class="table-scroll"><table><thead><tr><th>Product</th><th>Brand</th><th>Category</th><th>Price</th><th>Status</th><th>Readiness</th><th>Trending</th><th></th></tr></thead><tbody id="productTableBody"></tbody></table></div></div></section>
       <section class="page" id="page-categories"><div class="page-heading compact"><div><p class="eyebrow">ORGANIZE</p><h1>Categories</h1><p>See how the catalog is distributed across store sections.</p></div></div><div id="categoryCards" class="category-admin-grid"></div></section>
       <section class="page" id="page-brands"><div class="page-heading compact"><div><p class="eyebrow">PARTNERS</p><h1>Brands</h1><p>Manage the brands shown across the YK Electric catalog.</p></div><button class="primary-btn" id="addBrandBtn">＋ Add Brand</button></div><div id="brandCards" class="brand-admin-grid"></div></section>
       <section class="page" id="page-homepage"><div class="page-heading compact"><div><p class="eyebrow">STOREFRONT</p><h1>Homepage</h1><p>Choose which products receive priority placement.</p></div></div><article class="panel-card"><div class="panel-head"><div><h2>Trending Products</h2><p>Select up to four products for the homepage row.</p></div><span class="counter-pill" id="trendingCounter">4 / 4</span></div><div id="trendingSelector" class="trending-selector"></div></article></section>
@@ -51,15 +62,19 @@
     </main>
   </div>
 
-  <div class="modal-backdrop" id="productModal" hidden><div class="modal-card"><div class="modal-head"><div><small>PRODUCT EDITOR</small><h2 id="modalTitle">Add Product</h2></div><button id="closeModal" aria-label="Close">×</button></div><form id="productForm"><input type="hidden" name="id"><div class="field-grid"><label class="wide"><span>Product name *</span><input name="name" required placeholder="e.g. Miniature Circuit Breaker"></label><label><span>Brand *</span><input name="brand" required list="brandOptions"></label><label><span>Category *</span><select name="cat" required></select></label><label><span>Model</span><input name="model" placeholder="NB1 Series"></label><label><span>Specification</span><input name="spec" placeholder="6A–63A • SP/DP"></label><label><span>Price</span><input name="price" placeholder="Price on request"></label><label><span>Stock status</span><select name="stock"><option>Check Stock</option><option>In Stock</option><option>Out of Stock</option></select></label><label><span>Badge</span><input name="badge" placeholder="Top Pick"></label><label class="wide"><span>Image URL / path</span><input name="img" placeholder="Product image URL"></label><label class="wide"><span>Description</span><textarea name="desc" rows="3" placeholder="Short product description"></textarea></label></div><label class="toggle-row"><input type="checkbox" name="featured"><span><b>Trending product</b><small>Show this product in homepage priority selection.</small></span></label><div class="modal-actions"><button type="button" class="ghost-btn" id="cancelModal">Cancel</button><button type="submit" class="primary-btn">Save Product</button></div></form><datalist id="brandOptions"></datalist></div></div>
+  <div class="modal-backdrop" id="productModal" hidden><div class="modal-card"><div class="modal-head"><div><small>PRODUCT EDITOR</small><h2 id="modalTitle">Add Product</h2></div><button id="closeModal" aria-label="Close">×</button></div><form id="productForm"><input type="hidden" name="id"><div class="field-grid"><label class="wide"><span>Product name *</span><input name="name" required placeholder="e.g. Miniature Circuit Breaker"></label><label><span>Brand *</span><input name="brand" required list="brandOptions"></label><label><span>Category *</span><select name="cat" required></select></label><label><span>Model</span><input name="model" placeholder="NB1 Series"></label><label><span>Specification</span><input name="spec" placeholder="6A–63A • SP/DP"></label><label><span>Customer price</span><input name="price" placeholder="e.g. Rs. 850"></label><label><span>Stock status</span><select name="stock"><option>Check Stock</option><option>In Stock</option><option>Out of Stock</option></select></label><label><span>Badge</span><input name="badge" placeholder="Top Pick"></label><label class="wide"><span>Image URL / path</span><input name="img" placeholder="Product image URL"></label><label class="wide"><span>Description</span><textarea name="desc" rows="3" placeholder="Explain the application, key benefit and important specification."></textarea></label></div><div class="inventory-editor-link"><div><b>Need quantity and reorder tracking?</b><span>Use the Inventory section so every stock change is recorded in movement history.</span></div><button type="button" class="ghost-btn" id="openInventoryFromProduct">Open Inventory</button></div><label class="toggle-row"><input type="checkbox" name="featured"><span><b>Trending product</b><small>Show this product in homepage priority selection.</small></span></label><div class="modal-actions"><button type="button" class="ghost-btn" id="cancelModal">Cancel</button><button type="submit" class="primary-btn">Save Product</button></div></form><datalist id="brandOptions"></datalist></div></div>
 
   <div class="toast" id="toast" role="status"></div>
   <script src="../supabase-config.js?v=3"></script>
   <script src="admin-polish.js?v=14"></script>
   <script src="admin-upload.js?v=2"></script>
-  <script src="admin.js?v=1"></script>
-  <script src="admin-sync.js?v=5"></script>
-  <script src="admin-enquiries.js?v=3"></script>
+  <script src="admin.js?v=2"></script>
+  <script src="admin-sync.js?v=6"></script>
+  <script src="admin-enquiries.js?v=4"></script>
   <script src="admin-quotations.js?v=3"></script>
+  <script src="admin-quotation-list.js?v=1"></script>
+  <script src="admin-orders.js?v=1"></script>
+  <script src="admin-customers.js?v=1"></script>
+  <script src="admin-inventory.js?v=2"></script>
 </body>
 </html>

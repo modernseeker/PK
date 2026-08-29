@@ -1,6 +1,7 @@
 (()=>{
   const ADMIN_KEY='yk_admin_state_v1';
   const CLOUD_LOADED_KEY='yk_supabase_admin_loaded';
+  const DIRTY_KEY='yk_admin_dirty_v1';
   const cfg=window.YKSupabaseConfig||{};
   const $=s=>document.querySelector(s);
 
@@ -29,7 +30,8 @@
   function mapCloudProduct(p,trending){return {
     id:Number(p.id),brand:p.brand||'',name:p.name||'',model:p.model||'',spec:p.specification||'',cat:p.category||'',code:p.code||'',
     desc:p.description||'',img:toAdminImage(p.image_url||''),badge:p.badge||'',price:p.price_text||'Price on request',stock:p.stock_status||'Check Stock',
-    tags:p.tags||'',featured:trending.includes(Number(p.id))
+    tags:p.tags||'',featured:trending.includes(Number(p.id)),stockQuantity:Number(p.stock_quantity||0),reorderLevel:Number(p.reorder_level||0),
+    costPrice:Number(p.cost_price||0),stockUnit:p.stock_unit||'pcs',trackInventory:p.track_inventory===true
   };}
   function mapDraftProduct(p){return {
     id:Number(p.id),brand:String(p.brand||''),name:String(p.name||''),model:String(p.model||''),specification:String(p.spec||''),category:String(p.cat||''),
@@ -81,16 +83,18 @@
       const trending=draft.products.filter(p=>p.featured).slice(0,4).map((p,i)=>({slot:i+1,product_id:Number(p.id),updated_at:new Date().toISOString()}));
       if(trending.length)await rest('homepage_trending',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(trending)});
 
-      status('Saved to Supabase. Customer storefront data is updated immediately.','ok');
+      localStorage.removeItem(DIRTY_KEY);
+      status('Published to Supabase. Customer storefront data is updated immediately.','ok');
+      document.dispatchEvent(new CustomEvent('yk-admin-draft-published'));
     }catch(e){console.error(e);status(e.message,'error');alert(`Cloud save failed: ${e.message}`);}
-    finally{btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.old||'Save Cloud';});}
+    finally{btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.old||'Save Cloud';});renderDraftStatus();}
   }
 
   async function loadCloudIntoAdmin(confirmFirst=true){
     if(!window.YKAdminAuth?.isAuthenticated?.())return;
     if(confirmFirst&&!confirm('Replace this browser draft with the latest Supabase cloud data?'))return;
     try{
-      status('Loading current Supabase data…');const cloud=await fetchCloud();localStorage.setItem(ADMIN_KEY,JSON.stringify(cloud));sessionStorage.setItem(CLOUD_LOADED_KEY,'1');location.reload();
+      status('Loading current Supabase data…');const cloud=await fetchCloud();localStorage.setItem(ADMIN_KEY,JSON.stringify(cloud));localStorage.removeItem(DIRTY_KEY);sessionStorage.setItem(CLOUD_LOADED_KEY,'1');location.reload();
     }catch(e){status(e.message,'error');if(confirmFirst)alert(e.message);}
   }
 
@@ -108,6 +112,12 @@
     const el=$('#syncIdentity');if(!el)return;const user=window.YKAdminAuth?.getUser?.();
     el.innerHTML=user?`Signed in as <b>${user.email||'YK Admin'}</b>. Product changes are protected by Supabase Row Level Security.`:'Sign in with the YK Supabase admin account to edit cloud data.';
   }
+  function renderDraftStatus(){
+    const dirty=localStorage.getItem(DIRTY_KEY)==='1';
+    const save=$('#publishLiveBtn');
+    if(save){save.classList.toggle('has-draft',dirty);save.textContent=dirty?'↑ Publish Draft':'✓ Cloud Current';}
+    if(dirty)status('Draft changes are saved in this browser. Publish them when ready.','warning');
+  }
   function injectUI(){
     const actions=$('.topbar-actions');
     if(actions&&!$('#publishLiveBtn')){
@@ -121,12 +131,15 @@
       card.innerHTML=`<div class="panel-head"><div><h2>Supabase Cloud</h2><p>Products, pricing, stock, Trending and settings now live in the YK database.</p></div><span class="counter-pill">Live DB</span></div><div class="sync-help" id="syncIdentity"></div><div class="sync-row"><span id="syncStatus" data-type="info">Waiting for authenticated admin session.</span><div><button type="button" class="ghost-btn" id="testGithubBtn">Test cloud</button><button type="button" class="primary-btn" id="publishFromSettingsBtn">Save Cloud</button></div></div>`;
       settings.appendChild(card);$('#testGithubBtn').onclick=testConnection;$('#publishFromSettingsBtn').onclick=saveCloud;
     }
-    const notice=$('.local-notice');if(notice)notice.innerHTML='<b>Supabase cloud backend</b><span>YK Admin now saves to a protected database; the storefront reads the same live data.</span>';renderIdentity();
+    const notice=$('.local-notice');if(notice)notice.innerHTML='<b>Supabase cloud backend</b><span>YK Admin now saves to a protected database; the storefront reads the same live data.</span>';renderIdentity();renderDraftStatus();
   }
 
   document.addEventListener('yk-admin-authenticated',async()=>{
     renderIdentity();status('Supabase admin session active.','ok');
     if(!sessionStorage.getItem(CLOUD_LOADED_KEY))await loadCloudIntoAdmin(false);
+    else renderDraftStatus();
   });
+  document.addEventListener('yk-admin-draft-changed',renderDraftStatus);
+  document.addEventListener('yk-admin-draft-published',renderDraftStatus);
   injectUI();
 })();

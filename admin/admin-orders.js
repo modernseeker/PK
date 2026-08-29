@@ -1,7 +1,7 @@
 (()=>{
   const cfg=window.YKSupabaseConfig||{};
   const $=s=>document.querySelector(s);
-  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const statuses=['confirmed','preparing','ready','delivered','cancelled'];
   let orders=[],filter='all',query='',loading=false;
 
